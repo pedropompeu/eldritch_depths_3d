@@ -23,7 +23,7 @@ Plano: `docs/superpowers/plans/2026-11-14-tela-e-sensacao-trilha-jogo.md`
 | T09 | Matemática de movimento | simples | T02 | feita | claude-opus-5-5 | 2026-11-14 | 7d0e957 | OK: 11 testes (5 novos) |
 | T10 | Modo de entrada | médio | T03, T05 | feita | claude-opus-5-5 | 2026-11-14 | 0f7a176 | OK: 31 testes; 1 teste extra (tecla e clique voltam a KBM) |
 | T11 | Mira | médio | T02 | feita | claude-opus-5-5 | 2026-11-14 | 4da0630 | OK: 43 testes; 3 testes extras (mouse sobre o herói, altura diferente, NaN) |
-| T12 | Câmera: distância e seguimento | médio | T02 | livre | | | | |
+| T12 | Câmera: distância e seguimento | médio | T02 | feita | claude-opus-5-5 | 2026-11-14 | 6213f30 | OK: 47 testes; rig nasce em cima do alvo (ver rulings) |
 | T13 | Enquadramentos | simples | T03, T12 | livre | | | | |
 | T14 | Linha do tempo de ações | médio | T02 | livre | | | | |
 | T15 | Hitbox e hurtbox 3D | difícil | T02 | livre | | | | |
@@ -60,3 +60,4 @@ Formato: `- [data] T<nn> · modelo · <o que foi decidido> — <por quê> — <c
 - [2026-11-14] T08 · claude-opus-5-5 · `transition_to(String)` do 2D virou `change_state(StringName)` (contrato da T08) e o `@export var initial_state` do 2D ficou como opcional: sem ele, `init` entra no primeiro estado filho — mantém o contrato e deixa a cena escolher outro estado inicial sem código — se alguém preencher `initial_state` por engano, a máquina começa em outro estado.
 - [2026-11-14] T06–T16 · claude-opus-5-5 · Sem commits `docs: start T<nn>` — feitas em sequência numa sessão só, sem outro modelo em paralelo — nenhum.
 - [2026-11-14] T07 · claude-opus-5-5 · Em `test_sem_perks_manager_nao_quebra`, o esperado virou 90 em vez de 75 (plano corrigido) — o código do 2D, que a T07 manda portar sem mudar padrões, desconta o atraso e regenera no mesmo frame com o delta inteiro: 50 + 25 × 0,6 + 25 × 1,0 = 90; 75 só sairia mudando a regra de regeneração — se Pedro quiser que o atraso "coma" o frame, é uma mudança de comportamento a decidir com ele (diferença de no máximo um frame de regeneração a 60 fps).
+- [2026-11-14] T12 · claude-opus-5-5 · No `_ready`, o rig salta para a posição do alvo e `distance` começa no enquadramento 1/13 — sem isso, a câmera faria uma varredura desde a origem ao abrir a cena; a T13 troca a distância inicial pelo preset — se Pedro quiser uma entrada animada da câmera, é só tirar o salto.
