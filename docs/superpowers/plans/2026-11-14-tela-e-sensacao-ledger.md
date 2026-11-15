@@ -17,7 +17,7 @@ Plano: `docs/superpowers/plans/2026-11-14-tela-e-sensacao-trilha-jogo.md`
 | T03 | Mapa de controles | simples | T02 | feita | claude-opus-5-5 | 2026-11-14 | 8ba3f9c | OK: 5 testes; ver rulings sobre device -1 |
 | T04 | context/, lint e documentos | simples | T01 | feita | claude-opus-5-5 | 2026-11-14 | 8ff2f4c | lint limpo; decisoes.md ganhou 2 (i) extras: plano em 32 tarefas e formato do [input] |
 | T05 | Busca de autoload | simples | T02 | feita | claude-opus-5-5 | 2026-11-14 | 95426d6 | OK: 6 testes; teste usa get_node_or_null em vez de get_node (ver rulings) |
-| T06 | Faixas do Véu | simples | T02 | livre | | | | |
+| T06 | Faixas do Véu | simples | T02 | feita | claude-opus-5-5 | 2026-11-14 | 862f575 | OK: 13 testes; teste extra da ordem das faixas |
 | T07 | StatsComponent portado | médio | T05, T06 | livre | | | | |
 | T08 | Máquina de estados | simples | T02 | livre | | | | |
 | T09 | Matemática de movimento | simples | T02 | feita | claude-opus-5-5 | 2026-11-14 | 7d0e957 | OK: 11 testes (5 novos) |
