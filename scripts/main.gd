@@ -70,6 +70,9 @@ func _on_enemy_died() -> void:
 	enemy.target = hero
 	add_child(enemy)
 	enemy.global_transform = _enemy_spawn
+	# Teletransporte: sem isto a interpolação desenharia o inimigo deslizando
+	# de onde nasceu até o ponto de surgimento.
+	enemy.reset_physics_interpolation()
 	enemy.enemy_died.connect(_on_enemy_died)
 
 

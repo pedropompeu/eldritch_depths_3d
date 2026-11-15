@@ -40,7 +40,10 @@ func _ready() -> void:
 		global_position = target.global_position
 
 
-func _process(delta: float) -> void:
+## No passo de física, junto com o herói: a interpolação de física do projeto
+## suaviza os dois juntos entre os passos, em qualquer taxa de atualização do
+## monitor.
+func _physics_process(delta: float) -> void:
 	step(delta)
 
 

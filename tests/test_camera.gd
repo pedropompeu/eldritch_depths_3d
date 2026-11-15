@@ -44,6 +44,9 @@ func test_alvo_projeta_no_centro(tree: SceneTree) -> void:
 	alvo.global_position = Vector3(3, 0, -2)
 	var rig: CameraRig3D = load(CENA).instantiate()
 	rig.target = alvo
+	# Fora do passo de física, a câmera interpolada responde com a pose
+	# desenhada, que só anda com frames de verdade. Aqui só a geometria importa.
+	rig.physics_interpolation_mode = Node.PHYSICS_INTERPOLATION_MODE_OFF
 	vp.add_child(rig)
 	for i in 120:
 		rig.step(1.0 / 60)
@@ -55,3 +58,15 @@ func test_alvo_projeta_no_centro(tree: SceneTree) -> void:
 		"alvo em %s, longe do centro %s" % [p, centro])
 	assert_near(cam.global_position.distance_to(alvo.global_position), rig.distance, 0.05)
 	vp.queue_free()
+
+
+func test_interpolacao_de_fisica(tree: SceneTree) -> void:
+	# Revisão final: o herói anda no passo de física; sem interpolação, ele
+	# treme contra o cenário em monitores acima de 60 Hz.
+	assert_true(ProjectSettings.get_setting("physics/common/physics_interpolation", false), "interpolação de física ligada no projeto")
+	var rig: CameraRig3D = load(CENA).instantiate()
+	tree.root.add_child(rig)
+	await tree.process_frame
+	assert_true(rig.is_physics_processing(), "a câmera anda no passo de física, junto com o herói")
+	assert_false(rig.is_processing(), "e não no frame de desenho")
+	rig.queue_free()

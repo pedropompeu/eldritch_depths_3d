@@ -125,6 +125,10 @@ debug_camera_preset={
 ]
 }
 
+[physics]
+
+common/physics_interpolation=true
+
 [rendering]
 
 renderer/rendering_method="mobile"
