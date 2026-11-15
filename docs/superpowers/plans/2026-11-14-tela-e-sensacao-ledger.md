@@ -44,7 +44,7 @@ Plano: `docs/superpowers/plans/2026-11-14-tela-e-sensacao-trilha-jogo.md`
 | T30 | Modo automático e fps | médio | T29 | feita | claude-opus-5-5 | 2026-11-14 | 1a5f871 | autoplay + measure_fps.sh; mobile média 60,0 mínimo 59 (vsync); suíte 125 OK |
 | T31 | Renderizador e captura | simples | T30 | feita | claude-opus-5-5 | 2026-11-14 | eba6798 | `mobile` fixado: com vsync 60/60 nos dois; sem vsync mobile 403,7/364 × gl 387,2/341; captura quadro 70; suíte 125 OK |
 | T32 | Pedro joga e escolhe a câmera | humano | T31 | livre | | | | |
-| T33 | README com como rodar | simples | T31 | livre | | | | |
+| T33 | README com como rodar | simples | T31 | feita | claude-opus-5-5 | 2026-11-15 | 2464a2d | 9 seções; tabela conferida tecla a tecla contra o `[input]`; `godot --path . --quit-after 120` (com e sem `--sanity=20`) sem erro; suíte 129 OK; lint OK |
 | T34 | História do jogo no README | médio + Pedro | T33 | livre | | | | |
 
 ## Decisões de execução (rulings)
@@ -146,3 +146,6 @@ Formato: `- [data] T<nn> · modelo · <o que foi decidido> — <por quê> — <c
 - [2026-11-15] Final · claude-opus-5-5 · Final: minor (deferred): tipagem frouxa em `state.gd:6`
 - [2026-11-15] Final · claude-opus-5-5 · Final: minor (deferred): TODO esquecido em `stats_component.gd:105`
 - [2026-11-15] Final · claude-opus-5-5 · Final: minor (deferred): a parede do Véu nasce sólida qualquer que seja a faixa, e um inimigo dentro dela a mantém aberta (`veil_wall.gd:29-33`)
+- [2026-11-15] T33 · claude-opus-5-5 · A tabela de controles traz só as ações que fazem algo no Bloco 1A; `spell_cosmic` (Q / Y) e `interact` (E / B) estão no mapa mas nenhum script os lê, então viram uma frase de "reservadas, ainda não fazem nada" — o brief pede não prometer o que não existe — custo se errado: duas linhas a mais na tabela.
+- [2026-11-15] T33 · claude-opus-5-5 · Nomes dos botões do controle traduzidos dos índices do Godot (layout SDL: 0 = A/✕, 2 = X/□, eixo 4 = gatilho esquerdo, 11/12 = D-pad ↑/↓), com Xbox e PlayStation lado a lado; não conferido num controle físico — custo se errado: rótulo trocado no README, conferível na T32.
+- [2026-11-15] T33 · claude-opus-5-5 · Sem o passo de conferir o preview do Markdown num visualizador: conferido só que o caminho relativo `docs/capturas/2026-11-14-greybox.png` existe a partir da raiz — custo se errado: imagem quebrada no GitHub, um caminho a corrigir.
