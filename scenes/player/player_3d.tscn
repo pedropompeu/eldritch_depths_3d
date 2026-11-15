@@ -1,0 +1,83 @@
+[gd_scene load_steps=16 format=3]
+
+[ext_resource type="Script" path="res://scripts/player/player_3d.gd" id="1_player"]
+[ext_resource type="Script" path="res://scripts/components/stats_component.gd" id="2_stats"]
+[ext_resource type="Script" path="res://scripts/combat/posture_component.gd" id="3_posture"]
+[ext_resource type="Script" path="res://scripts/state_machine/state_machine.gd" id="4_sm"]
+[ext_resource type="Script" path="res://scripts/player/states/idle.gd" id="5_idle"]
+[ext_resource type="Script" path="res://scripts/player/states/move.gd" id="6_move"]
+[ext_resource type="Script" path="res://scripts/combat/hitbox_3d.gd" id="7_hitbox"]
+[ext_resource type="Script" path="res://scripts/combat/hurtbox_3d.gd" id="8_hurtbox"]
+
+[sub_resource type="CapsuleShape3D" id="Capsule_corpo"]
+radius = 0.35
+height = 1.8
+
+[sub_resource type="BoxShape3D" id="Box_espada"]
+size = Vector3(1.2, 1, 1.2)
+
+[sub_resource type="CapsuleShape3D" id="Capsule_hurtbox"]
+radius = 0.4
+height = 1.8
+
+[sub_resource type="CapsuleMesh" id="Mesh_corpo"]
+radius = 0.35
+height = 1.8
+
+[sub_resource type="StandardMaterial3D" id="Mat_seta"]
+shading_mode = 0
+albedo_color = Color(0.95, 0.75, 0.4, 1)
+
+[sub_resource type="CylinderMesh" id="Mesh_seta"]
+material = SubResource("Mat_seta")
+top_radius = 0.0
+bottom_radius = 0.12
+height = 0.6
+radial_segments = 12
+rings = 1
+
+[node name="Player3D" type="CharacterBody3D"]
+collision_layer = 2
+collision_mask = 1
+script = ExtResource("1_player")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("Capsule_corpo")
+
+[node name="Stats" type="Node" parent="."]
+script = ExtResource("2_stats")
+
+[node name="Posture" type="Node" parent="."]
+script = ExtResource("3_posture")
+
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource("4_sm")
+
+[node name="Idle" type="Node" parent="StateMachine"]
+script = ExtResource("5_idle")
+
+[node name="Move" type="Node" parent="StateMachine"]
+script = ExtResource("6_move")
+
+[node name="Sword" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, -0.9)
+script = ExtResource("7_hitbox")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Sword"]
+shape = SubResource("Box_espada")
+
+[node name="Hurtbox" type="Area3D" parent="."]
+script = ExtResource("8_hurtbox")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Hurtbox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+shape = SubResource("Capsule_hurtbox")
+
+[node name="Body" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+mesh = SubResource("Mesh_corpo")
+
+[node name="AimArrow" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0.05, -0.9)
+mesh = SubResource("Mesh_seta")
