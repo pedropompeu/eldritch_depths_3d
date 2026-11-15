@@ -80,8 +80,17 @@ func walk(delta: float, speed_scale := 1.0) -> void:
 
 ## Tenta começar o ataque (T18). Falso sem vigor ou sem o estado na cena.
 func try_attack() -> bool:
-	var ataque: State = state_machine.states.get(&"attack")
-	return ataque != null and ataque.try_begin()
+	return _try_action(&"attack")
+
+
+## Tenta começar a esquiva (T19). Falso sem vigor ou sem o estado na cena.
+func try_roll() -> bool:
+	return _try_action(&"roll")
+
+
+func _try_action(key: StringName) -> bool:
+	var acao: State = state_machine.states.get(key)
+	return acao != null and acao.try_begin()
 
 
 func horizontal_speed() -> float:
