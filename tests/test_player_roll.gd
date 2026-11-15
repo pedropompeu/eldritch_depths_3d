@@ -121,3 +121,35 @@ func test_esquiva_sem_vigor_nao_sai(tree: SceneTree) -> void:
 	assert_near(heroi.stats.current_stamina, 10.0, 0.001)
 	assert_false(heroi.hurtbox.invulnerable)
 	m[0].queue_free()
+
+
+func test_travada_que_termina_a_esquiva(tree: SceneTree) -> void:
+	# Revisão final: um passo de 0,3 s que cobre a janela e também termina a
+	# esquiva não pode desligar a invencibilidade antes dos golpes do frame.
+	var m: Array = await _montar(tree)
+	var heroi: Player3D = m[1]
+	var golpe := Hitbox3D.new()
+	golpe.team = 1
+	var forma := CollisionShape3D.new()
+	var esfera := SphereShape3D.new()
+	esfera.radius = 5.0
+	forma.shape = esfera
+	golpe.add_child(forma)
+	golpe.position = Vector3(0, 0.9, 0)
+	m[0].add_child(golpe)
+	var contagem := {hurt = 0}
+	heroi.hurtbox.hurt.connect(func(_h): contagem.hurt += 1)
+	await tree.physics_frame
+	await tree.physics_frame
+	var vida := heroi.stats.current_health
+	_apertar_esquiva(heroi, m[2])
+	heroi.step(0.1)
+	heroi.step(0.3)
+	assert_true(heroi.state_machine.current_state.name != &"Roll", "a travada terminou a esquiva")
+	golpe.activate()
+	assert_eq(contagem.hurt, 0, "o golpe do mesmo frame ainda pega a invencibilidade")
+	assert_near(heroi.stats.current_health, vida, 0.001)
+	golpe.deactivate()
+	heroi.step(PASSO)
+	assert_false(heroi.hurtbox.invulnerable, "no passo seguinte o herói volta a ser vulnerável")
+	m[0].queue_free()

@@ -33,7 +33,7 @@ func enter() -> void:
 
 
 func exit() -> void:
-	actor.hurtbox.parrying = false
+	actor.release_guard_next_step()
 
 
 func process_physics(delta: float) -> void:

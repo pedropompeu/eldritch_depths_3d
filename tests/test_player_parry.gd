@@ -96,3 +96,21 @@ func test_golpe_cosmico_tira_sanidade(tree: SceneTree) -> void:
 	assert_near(heroi.stats.current_sanity, 85.0, 0.001)
 	assert_near(heroi.stats.current_health, 80.0, 0.001)
 	m[0].queue_free()
+
+
+func test_travada_que_termina_o_parry(tree: SceneTree) -> void:
+	# Revisão final: um passo de 0,35 s que cobre a janela e também termina o
+	# parry não pode fechar a janela antes dos golpes do frame.
+	var m: Array = await _montar(tree)
+	var heroi: Player3D = m[1]
+	_apertar_parry(heroi, m[2])
+	heroi.step(0.1)
+	heroi.step(0.35)
+	assert_true(heroi.state_machine.current_state.name != &"Parry", "a travada terminou o parry")
+	m[3].activate()
+	assert_near(heroi.stats.current_health, 100.0, 0.001, "o golpe do mesmo frame ainda é aparado")
+	assert_near(m[4].current, 50.0, 0.001, "postura do atacante")
+	m[3].deactivate()
+	heroi.step(PASSO)
+	assert_false(heroi.hurtbox.parrying, "no passo seguinte a janela fecha")
+	m[0].queue_free()

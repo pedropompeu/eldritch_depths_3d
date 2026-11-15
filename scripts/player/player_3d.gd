@@ -33,6 +33,9 @@ var input: Dictionary = {}
 ## Direção (no plano XZ, comprimento 1) de quem bateu até o herói, no último
 ## golpe recebido. O estado `hurt` empurra para cá.
 var last_hit_dir: Vector3 = Vector3.BACK
+## Ligado quando a esquiva ou o parry terminam: a invencibilidade e a janela de
+## parry só se desligam no começo do próximo passo (ver `release_guard_next_step`).
+var _release_guard := false
 
 @onready var stats: StatsComponent = $Stats
 @onready var posture: PostureComponent = $Posture
@@ -71,6 +74,10 @@ func read_input() -> Dictionary:
 
 ## O trabalho de um `_physics_process`; os testes chamam direto.
 func step(delta: float) -> void:
+	if _release_guard:
+		_release_guard = false
+		hurtbox.invulnerable = false
+		hurtbox.parrying = false
 	input = read_input()
 	var yaw := camera_rig.get_yaw() if camera_rig else 0.0
 	move_dir = PlayerMotion.input_to_world(input.move, yaw)
@@ -81,6 +88,14 @@ func step(delta: float) -> void:
 		velocity.y -= GRAVITY * delta
 	move_and_slide()
 	_update_arrow()
+
+
+## Chamado no `exit()` da esquiva e do parry. Os golpes do frame são
+## processados depois do passo; se o passo que terminou a ação já tivesse
+## desligado a proteção, uma travada que cobre a janela e o fim da ação deixaria
+## passar o golpe daquele mesmo frame. A proteção fica até o próximo passo.
+func release_guard_next_step() -> void:
+	_release_guard = true
 
 
 ## Acelera (ou freia, sem entrada) a velocidade horizontal rumo a `move_dir`.
