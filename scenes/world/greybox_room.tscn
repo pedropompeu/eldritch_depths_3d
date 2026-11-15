@@ -1,0 +1,116 @@
+[gd_scene load_steps=3 format=3]
+
+[sub_resource type="StandardMaterial3D" id="Mat_cinza"]
+albedo_color = Color(0.227451, 0.227451, 0.25098, 1)
+roughness = 0.9
+
+[sub_resource type="Environment" id="Env_sala"]
+background_mode = 1
+background_color = Color(0.0196078, 0.0235294, 0.0392157, 1)
+ambient_light_source = 2
+ambient_light_color = Color(0.12549, 0.141176, 0.188235, 1)
+ambient_light_energy = 0.05
+tonemap_mode = 3
+glow_enabled = true
+glow_intensity = 0.4
+fog_enabled = true
+fog_light_color = Color(0.0431373, 0.0509804, 0.0705882, 1)
+fog_density = 0.03
+
+[node name="GreyboxRoom" type="Node3D"]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Env_sala")
+
+[node name="Geometry" type="Node3D" parent="."]
+
+[node name="Floor" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, 0)
+use_collision = true
+collision_layer = 1
+collision_mask = 0
+size = Vector3(16.4, 0.5, 16.4)
+material = SubResource("Mat_cinza")
+
+[node name="WallSouth" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 8)
+use_collision = true
+collision_layer = 1
+collision_mask = 0
+size = Vector3(16.4, 3, 0.4)
+material = SubResource("Mat_cinza")
+
+[node name="WallWest" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8, 1.5, 0)
+use_collision = true
+collision_layer = 1
+collision_mask = 0
+size = Vector3(0.4, 3, 16.4)
+material = SubResource("Mat_cinza")
+
+[node name="WallEast" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8, 1.5, 0)
+use_collision = true
+collision_layer = 1
+collision_mask = 0
+size = Vector3(0.4, 3, 16.4)
+material = SubResource("Mat_cinza")
+
+[node name="WallNorthW" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.6, 1.5, -8)
+use_collision = true
+collision_layer = 1
+collision_mask = 0
+size = Vector3(7.2, 3, 0.4)
+material = SubResource("Mat_cinza")
+
+[node name="WallNorthE" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.6, 1.5, -8)
+use_collision = true
+collision_layer = 1
+collision_mask = 0
+size = Vector3(7.2, 3, 0.4)
+material = SubResource("Mat_cinza")
+
+[node name="Column" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 1.5, 0)
+use_collision = true
+collision_layer = 1
+collision_mask = 0
+size = Vector3(1, 3, 1)
+material = SubResource("Mat_cinza")
+
+[node name="AnteFloor" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.25, -10.1)
+use_collision = true
+collision_layer = 1
+collision_mask = 0
+size = Vector3(4.8, 0.5, 4.4)
+material = SubResource("Mat_cinza")
+
+[node name="AnteWallW" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.2, 1.5, -10.1)
+use_collision = true
+collision_layer = 1
+collision_mask = 0
+size = Vector3(0.4, 3, 4.4)
+material = SubResource("Mat_cinza")
+
+[node name="AnteWallE" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.2, 1.5, -10.1)
+use_collision = true
+collision_layer = 1
+collision_mask = 0
+size = Vector3(0.4, 3, 4.4)
+material = SubResource("Mat_cinza")
+
+[node name="AnteWallN" type="CSGBox3D" parent="Geometry"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -12.2)
+use_collision = true
+collision_layer = 1
+collision_mask = 0
+size = Vector3(4.8, 3, 0.4)
+material = SubResource("Mat_cinza")
+
+[node name="DoorSlot" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -8)
