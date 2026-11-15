@@ -10,7 +10,17 @@ Protótipo do **Bloco 1A** ("Tela e sensação", trilha de jogo): uma sala em bl
 
 ## A história
 
-<!-- história: T34 -->
+Dizem os antigos que a mente dos homens é um véu, tecido para esconder o que habita as profundezas. Enquanto está inteiro, cumpre seu ofício. Quanto mais fino, mais se vê.
+
+Outrora o Reino de Solvéria dormia em paz sob as estrelas. Mas na noite da Maré Astral os astros se alinharam, o chão do Santuário das Cinzas fendeu-se e abriu-se o Poço sem fundo. Dele subiu o sonho de Oth-Ysael, Aquele Que Sonha Sob o Poço, que arrastou para as trevas a Princesa Aurélia, derradeira herdeira de Solvéria. Desde aquela noite, nenhuma aurora nasceu inteira sobre o reino.
+
+Tu és um andarilho, e teu nome só tu o dás. À beira da fenda, Illyria, a Guardiã das Cinzas, última a velar as chamas antigas, abençoa-te e manda-te descer. Andar por andar hás de ir, que os caminhos mudam a cada descida e a cada cinco deles há quem guarde a passagem. Leva a espada, os frascos de sangue e o láudano, e não te fies no que vires lá embaixo.
+
+Pois lá embaixo o juízo não é só coragem: é o que teus olhos alcançam. Quanto mais ele míngua, mais o Poço se desvela. Muros de pedra desfazem-se em passagens, andares escondidos abrem-se, e do outro lado do Véu jazem fragmentos de poder que ninguém de juízo inteiro jamais tocou. Muitos já trocaram a própria humanidade por esse olhar.
+
+Mas o Véu não se rasga de graça. Quando a derradeira fibra cede, algo nasce de dentro de ti: um Senhor de lacaios, cercado das criaturas que só o outro lado conhece. Vence-o e segue descendo. Cai, e o Poço ganha mais um.
+
+Três descem em busca da Princesa. O Cavaleiro encapuzado, de armadura escura e espada longa. O Mago, que lê nas estrelas o que o Poço esconde. E o Demônio, que um dia perdeu o Véu inteiro, venceu a coisa que dele nasceu e a traz agora consigo: senhor de lacaios, invoca as criaturas do outro lado.
 
 ## Requisitos
 
