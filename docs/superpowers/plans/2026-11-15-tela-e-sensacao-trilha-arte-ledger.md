@@ -15,7 +15,7 @@ Plano: `docs/superpowers/plans/2026-11-15-tela-e-sensacao-trilha-arte.md`
 |---|---|---|---|---|---|---|---|---|
 | B01 | Guia de estilo | arte | — | aguarda Pedro | claude-opus-5-5 | 2026-11-15 | f6152ae | portão: Pedro aprova o guia e a paleta (docs/arte/) |
 | B02 | Registro de origem e licenças | simples | — | feita | claude-opus-5-5 | 2026-11-15 | 706aa93 | OK: 131 testes; checagem em scripts/tools/assets_registry.gd (class_name AssetsRegistry); prova com arquivos falsos acusou os 2 e ignorou .import |
-| B03 | Ferramentas do Blender por script | difícil | — | livre | | | | |
+| B03 | Ferramentas do Blender por script | difícil | — | em andamento | claude-opus-5-5 | 2026-11-15 | | |
 | B04 | Prova do pipeline — o braseiro | arte | B01, B02, B03 | livre | | | | [Pedro] gera imagem e 3D; portão |
 | B05 | Conceito do Cavaleiro | arte | B01 | livre | | | | [Pedro] gera; portão |
 | B06 | Cavaleiro — malha limpa | arte | B04, B05, T32 (a) | livre | | | | [Pedro] gera 3D; portão |
