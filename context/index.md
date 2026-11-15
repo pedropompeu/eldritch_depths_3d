@@ -24,6 +24,8 @@ RPG de ação 3D (Godot 4.7.2) de horror cósmico em que a sanidade é o Véu da
 - [2026-11-14] (e) Design aprovado (autoridade do produto): `docs/superpowers/specs/2026-11-14-eldritch-depths-3d-design.md`.
 - [2026-11-14] (e) Plano do Bloco 1A (trilha de jogo): `docs/superpowers/plans/2026-11-14-tela-e-sensacao-trilha-jogo.md`.
 - [2026-11-14] (e) Ledger do Bloco 1A (quem faz qual tarefa, status, rulings): `docs/superpowers/plans/2026-11-14-tela-e-sensacao-ledger.md`.
+- [2026-11-15] (e) Plano do Bloco 1B (trilha de arte): `docs/superpowers/plans/2026-11-15-tela-e-sensacao-trilha-arte.md`.
+- [2026-11-15] (e) Ledger do Bloco 1B: `docs/superpowers/plans/2026-11-15-tela-e-sensacao-trilha-arte-ledger.md`.
 - [2026-11-14] (e) Projeto 2D de referência (intacto, só leitura): `/home/usuario/Dev/holding_agy/eldritch_depths_20260912/`.
 
 ## Regras

@@ -22,7 +22,8 @@ relacionado:
 ## A02 · A arte pode não chegar ao nível da Steam e do portfólio {#risco-arte}
 
 - [2026-11-14] (i) **Severidade:** alto — arte feia é anti-meta declarada por Pedro; se o pipeline falhar, o jogo funciona mas não serve a nenhum dos dois usos.
-- [2026-11-14] (e) **Onde:** trilha de arte (Bloco 1B, plano próprio a escrever).
+- [2026-11-14] (e) **Onde:** trilha de arte (Bloco 1B, plano próprio a escrever). ~superseded 2026-11-15 → linha seguinte
+- [2026-11-15] (e) **Onde:** plano do Bloco 1B, `docs/superpowers/plans/2026-11-15-tela-e-sensacao-trilha-arte.md`; a prova do pipeline é a tarefa B04 (braseiro), que acrescenta aqui o que aprendeu.
 - [2026-11-14] (e) **Reprodução:** não é bug; vem das restrições — modelos 3D originais, Pedro nunca usou Blender, geração 3D por IA local exige NVIDIA (ausente nesta máquina), orçamento R$ 0.
 - [2026-11-14] (i) **Fix / mitigação:** guia de estilo antes da produção em série; conceito do Cavaleiro aprovado por Pedro antes de modelar; prova do pipeline IA → Blender → Godot com uma peça pequena; pré-visualizações renderizadas a cada etapa. A trilha de jogo segue com provisórios para não esperar a arte.
 
