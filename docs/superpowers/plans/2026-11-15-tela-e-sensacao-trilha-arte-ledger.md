@@ -13,10 +13,10 @@ Plano: `docs/superpowers/plans/2026-11-15-tela-e-sensacao-trilha-arte.md`
 
 | Tarefa | Nome | Nível | Depende de | Status | Modelo | Data | Commit | Nota |
 |---|---|---|---|---|---|---|---|---|
-| B01 | Guia de estilo | arte | — | aguarda Pedro | claude-opus-5-5 | 2026-11-15 | f6152ae | portão: Pedro aprova o guia e a paleta (docs/arte/) |
+| B01 | Guia de estilo | arte | — | feita | claude-opus-5-5 | 2026-11-15 | f6152ae | [2026-11-15] Pedro viu a maquete das três direções (pintada, estilizada com contorno, realista sombria) e aprovou: "Podemos seguir com a opção A". Guia e paleta ficam como estão. T32 (a) segue em aberto. |
 | B02 | Registro de origem e licenças | simples | — | feita | claude-opus-5-5 | 2026-11-15 | 706aa93 | OK: 131 testes; checagem em scripts/tools/assets_registry.gd (class_name AssetsRegistry); prova com arquivos falsos acusou os 2 e ignorou .import |
 | B03 | Ferramentas do Blender por script | difícil | — | feita | claude-opus-5-5 | 2026-11-15 | dae8b44 | 9 testes em ~3,4 s; 4 vistas em 1024² levam ~28 s (Cycles na CPU) |
-| B04 | Prova do pipeline — o braseiro | arte | B01, B02, B03 | livre | | | | [Pedro] gera imagem e 3D; portão |
+| B04 | Prova do pipeline — o braseiro | arte | B01, B02, B03 | aguarda Pedro | claude-opus-5-5 | 2026-11-15 | | [Pedro] gerar a imagem no FLUX.1 [schnell] e o modelo no TRELLIS.2 seguindo `art/prompts/braseiro.md`; salvar os dois em `art/brutos/` com os nomes do prompt |
 | B05 | Conceito do Cavaleiro | arte | B01 | livre | | | | [Pedro] gera; portão |
 | B06 | Cavaleiro — malha limpa | arte | B04, B05, T32 (a) | livre | | | | [Pedro] gera 3D; portão |
 | B07 | Cavaleiro — textura pintada | arte | B06 | livre | | | | portão |
