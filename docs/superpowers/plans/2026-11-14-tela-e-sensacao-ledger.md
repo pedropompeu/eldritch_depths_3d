@@ -35,7 +35,7 @@ Plano: `docs/superpowers/plans/2026-11-14-tela-e-sensacao-trilha-jogo.md`
 | T21 | Dano, morte e frascos | médio | T20 | feita | claude-opus-5-5 | 2026-11-14 | cf08433 | OK: 86 testes |
 | T22 | Inimigo: perseguição | médio | T07, T08, T15, T16 | feita | claude-opus-5-5 | 2026-11-14 | 5a1caf8 | OK: 91 testes |
 | T23 | Inimigo: aviso, golpe e recarga | médio | T14, T22 | feita | claude-opus-5-5 | 2026-11-14 | 59cd72c | OK: 97 testes |
-| T24 | Inimigo: atordoado e morte | médio | T23 | livre | | | | |
+| T24 | Inimigo: atordoado e morte | médio | T23 | feita | claude-opus-5-5 | 2026-11-14 | 93c3840 | OK: 101 testes |
 | T25 | Sala cinza, luz e main | médio | T21, T24 | livre | | | | |
 | T26 | Parede do Véu | difícil | T06, T25 | livre | | | | |
 | T27 | Vinheta e tecla de depuração | médio | T26 | livre | | | | |
@@ -86,3 +86,7 @@ Formato: `- [data] T<nn> · modelo · <o que foi decidido> — <por quê> — <c
 - [2026-11-14] T23 · claude-opus-5-5 · O ciclo começa dois passos depois do alvo entrar no alcance partindo de `idle` (idle→chase→telegraph): a máquina de estados troca um estado por passo; os testes usam `_ate_avisar` — custo se errado: 1/60 s de atraso, invisível.
 - [2026-11-14] T23 · claude-opus-5-5 · `test_para_no_alcance` (T22) passa a esperar `Telegraph` em vez de `Chase`, como a própria T23 anuncia; testes extras `test_aviso_brilha_vermelho` e `test_nao_gira_depois_do_aviso` além dos 4 do brief — custo se errado: nenhum, só testes.
 - [2026-11-14] T23 · claude-opus-5-5 · O brilho do aviso só liga/desliga `emission_enabled` no material local do corpo (cor e energia ficam gravadas depois do primeiro aviso) — custo se errado: nenhum visível.
+- [2026-11-14] T24 · claude-opus-5-5 · Novo `PostureComponent.recover()` (encerra a quebra, zera a postura, emite `posture_changed` e `posture_recovered`), chamado no `exit` do `stunned` — o brief diz que o `stunned` "chama Posture para recuperar" e o componente não tinha como — custo se errado: nenhum; o herói não usa.
+- [2026-11-14] T24 · claude-opus-5-5 · Em `_on_hurt` o dano entra antes da postura: o golpe que quebra a postura não é crítico, só os seguintes; golpe que mata não mexe na postura; morto ignora golpes; `stunned` termina em `chase` (que volta a `idle` se o alvo estiver longe) — custo se errado: um golpe a mais ou a menos de crítico por quebra.
+- [2026-11-14] T24 · claude-opus-5-5 · XP dado é `Stats.xp_reward` do inimigo (padrão 35, o valor do brief) ao `StatsComponent` do alvo, procurado na propriedade `stats` (o `Player3D`) ou no primeiro filho; morte desliga camada/máscara do corpo na hora e formas e `monitorable` da hurtbox por `set_deferred`; `queue_free` contado em passos (1 s) no `dead`, não por timer — custo se errado: nenhum visível.
+- [2026-11-14] T24 · claude-opus-5-5 · Teste extra `test_golpe_comum_enche_postura` além dos 3 do brief; a morte também checa colisão desligada, golpe póstumo e o apagar em 1 s — custo se errado: nenhum, só testes.
