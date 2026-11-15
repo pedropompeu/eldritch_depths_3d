@@ -2,3 +2,4 @@
 /build/
 *.tmp
 art/brutos/*.grande.*
+tools/ia/.venv/

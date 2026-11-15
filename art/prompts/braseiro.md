@@ -2,6 +2,8 @@
 
 Primeira peça do Bloco 1B: prova o caminho IA → Blender → Godot com um prop pequeno antes do Cavaleiro. São duas gerações, nesta ordem: a imagem e depois o modelo 3D a partir dela.
 
+**[2026-11-15] Pela API (decisão de Pedro):** o Claude roda as duas etapas por script, `tools/ia.sh flux.py art/prompts/braseiro.md .godot/capturas_tmp/ia/braseiro <seeds…>` para a imagem, e copia só a escolhida para `art/brutos/`. As configurações abaixo valem para os dois caminhos; o passo a passo pela página fica de reserva.
+
 ## 1. Imagem (FLUX.1 [schnell])
 
 **Serviço:** Space `black-forest-labs/FLUX.1-schnell` — https://huggingface.co/spaces/black-forest-labs/FLUX.1-schnell (Apache 2.0, uso comercial liberado; ver `context/assets.md`).

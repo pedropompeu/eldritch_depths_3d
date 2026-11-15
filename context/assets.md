@@ -19,6 +19,8 @@ Todo arquivo em `assets/models/` e em `art/brutos/` precisa de uma linha na tabe
 - [2026-11-15] (e) **Mixamo** (auto-rig e animações sobre o nosso modelo): segundo a FAQ da Adobe, lida por busca porque a página recusou leitura automática, personagens e animações são royalty-free para projetos pessoais, comerciais e sem fins lucrativos, jogos incluídos, com Adobe ID grátis. Pedro confere a FAQ no navegador antes da B09 e a confirmação entra aqui como (d). https://helpx.adobe.com/creative-cloud/faq/mixamo-faq.html
 - [2026-11-15] (e) **Hunyuan3D — excluído:** a licença comunitária não vale na União Europeia, no Reino Unido nem na Coreia do Sul, onde a demo será vendida. https://huggingface.co/tencent/Hunyuan3D-2/blob/main/LICENSE
 - [2026-11-15] (e) **Blender 4.5.15 LTS:** GPL; o que se cria com ele pertence a quem cria. https://www.blender.org/about/license/
+- [2026-11-15] (e) **gradio_client 2.7.2** (cliente da API dos Spaces): Apache 2.0. Os Spaces ZeroGPU dão cota diária de GPU por conta; a cota anônima desta rede estava zerada na primeira chamada ("You have exceeded your ZeroGPU quota (90s requested vs. 0s left)"), então as chamadas usam o token da conta grátis de Pedro. https://github.com/gradio-app/gradio/tree/main/client/python
+- [2026-11-15] (d) Pedro aprovou gerar pela API em vez da página ("aprovamdo"): o Claude opera os Spaces por script e o operador dos brutos passa a ser `claude (api, conta de Pedro)`; ver [[decisoes]].
 - [2026-11-15] (d) Ferramentas acima confirmadas por Pedro ("o que voce indicar"), ver [[decisoes]].
 
 ## Assets {#assets}
