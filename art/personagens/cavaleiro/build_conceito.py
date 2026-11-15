@@ -24,8 +24,8 @@ sys.path.insert(0, os.path.join(RAIZ, "tools", "blender"))
 import ed_blender as ed  # noqa: E402
 import ed_modelagem as em  # noqa: E402
 import ed_conceito as ec  # noqa: E402
-from ed_conceito import (caixa, casca, engrossar, esfera, gema, grade,  # noqa: E402
-                         liso, orientar, segmento, suave)
+from ed_conceito import (amassar, booleana, caixa, casca, engrossar, esfera, gema,  # noqa: E402
+                         grade, liso, orientar, segmento, suave)
 
 TMP = os.path.join(RAIZ, ".godot", "capturas_tmp", "cavaleiro_conceito")
 
@@ -36,6 +36,7 @@ COURO_CAPUZ = "#34241f"
 COURO_CINTO = "#2a1d1b"
 ACO = "#3c3e4a"
 ACO_GUME = "#8a8c96"
+ACO_METAL = "#7c7e8a"     # base metálica: aco-gume escurecido; sob luz lê como `aco`
 TABARDO = "#7e8089"
 TABARDO_RUNA = "#3c3e4a"
 OSSO = "#8f877a"
@@ -57,14 +58,18 @@ TORNOZELO = 0.17, 0.09
 def materiais():
     material = ec.material
     return {
-        "casaco": material("casaco", COURO_CASACO, 0.75, variacao=0.25, borda="#5a4038"),
-        "capuz": material("capuz", COURO_CAPUZ, 0.8, variacao=0.25),
-        "cinto": material("cinto", COURO_CINTO, 0.7, variacao=0.2, borda="#4a3530"),
-        "aco": material("aco", ACO, 0.4, metalico=0.6, variacao=0.15, borda=ACO_GUME),
-        "tabardo": ec.mat_runas("tabardo", TABARDO, TABARDO_RUNA, 0.7, 0.1),
-        "osso": material("osso", OSSO, 0.6, variacao=0.12, ao=0.8),
-        "capa": material("capa", CAPA, 0.85, variacao=0.3),
-        "calca": material("calca", CALCA, 0.85),
+        "casaco": material("casaco", COURO_CASACO, 0.62, variacao=0.3, borda="#5a4038",
+                           superficie="couro"),
+        "capuz": material("capuz", COURO_CAPUZ, 0.7, variacao=0.3, superficie="couro"),
+        "cinto": material("cinto", COURO_CINTO, 0.6, variacao=0.25, borda="#4a3530", superficie="couro"),
+        # Metal de verdade: albedo claro, metálico pleno; o escuro vem do reflexo e da pátina.
+        "aco": material("aco", ACO_METAL, 0.5, metalico=1.0, variacao=0.45, borda=ACO_GUME,
+                        superficie="aco", forca_relevo=1.6),
+        "tabardo": ec.mat_runas("tabardo", TABARDO, TABARDO_RUNA, 0.85, 0.0, cor_barra="#5a5c64",
+                                faixas=False, sujeira=0.7, superficie="pano"),
+        "osso": material("osso", OSSO, 0.55, variacao=0.18, ao=0.9, superficie="osso"),
+        "capa": material("capa", CAPA, 0.9, variacao=0.3, superficie="pano"),
+        "calca": material("calca", CALCA, 0.9, superficie="pano"),
         "breu": material("breu", BREU, 1.0),
         "runa": material("runa", RUNA, 0.3, emissao=0.5),
     }
@@ -115,8 +120,9 @@ def corpo(M):
         q = Vector((lado * QUADRIL[0], 0, QUADRIL[1]))
         j = Vector((lado * JOELHO[0], -0.01, JOELHO[1]))
         t = Vector((lado * TORNOZELO[0], 0, TORNOZELO[1]))
-        p.append(em.usar(suave(segmento(f"coxa{lado}", q, j, [(0.0, 0), (0.085, 0.02), (0.08, 0.5),
-                                                               (0.066, 1.0), (0.0, 1.0)])), M["calca"]))
+        p.append(em.usar(amassar(segmento(f"coxa{lado}", q, j, [(0.0, 0), (0.085, 0.02), (0.08, 0.5),
+                                                                 (0.066, 1.0), (0.0, 1.0)]), 0.004, 0.04, 1),
+                         M["calca"]))
         p.append(em.usar(suave(segmento(f"greva{lado}", j, t, [(0.0, -0.02), (0.064, 0.0),
                                                                (0.066, 0.3), (0.05, 0.85),
                                                                (0.056, 1.0), (0.0, 1.0)])), M["aco"]))
@@ -179,7 +185,7 @@ def bracos(M):
         eixo = Vector((lado * 0.5, 0, 0.87))
         for i, (esc, desce) in enumerate(((1.0, 0.0), (0.86, 0.075), (0.74, 0.14))):
             placa = em.torno(f"ombreira{lado}_{i}", [
-                (0.0, 0.06 * esc), (0.05 * esc, 0.055 * esc), (0.088 * esc, 0.034 * esc),
+                (0.0, 0.042 * esc), (0.05 * esc, 0.038 * esc), (0.088 * esc, 0.022 * esc),
                 (0.108 * esc, 0.0), (0.114 * esc, -0.035 * esc)], 18)
             orientar(placa, s + Vector((0, 0, 0.035)) + d * desce, eixo)
             p.append(em.usar(engrossar(liso(placa), 0.012), M["aco"]))
@@ -208,20 +214,35 @@ def cabeca(M):
     capuz.location = (0, -0.012, 0)
     capuz.scale = (1, 0.95, 1)
     em.usar(capuz, M["capuz"])
-    p.append(engrossar(liso(capuz), 0.016, M["breu"]))
+    p.append(engrossar(amassar(capuz, 0.004, 0.05), 0.016, M["breu"]))
 
-    # Máscara de caveira em osso.
-    p.append(em.usar(suave(esfera("cranio", 1.0, (0, -0.07, 1.625), (0.078, 0.052, 0.078))), M["osso"]))
-    p.append(em.usar(suave(esfera("maxilar", 1.0, (0, -0.078, 1.56), (0.052, 0.04, 0.04))), M["osso"]))
-    for lado in (-1, 1):
-        p.append(em.usar(suave(esfera(f"orbita{lado}", 0.026, (lado * 0.032, -0.105, 1.618),
-                                      (1, 0.55, 0.85))), M["breu"]))
-    nariz = em.torno("nariz", [(0.0, -0.016), (0.012, -0.016), (0.0, 0.012)], 3)
-    nariz.location = (0, -0.115, 1.588)
-    p.append(em.usar(nariz, M["breu"]))
-    for k in range(-2, 3):
-        p.append(em.usar(caixa(f"dente{k}", (k * 0.0105, -0.111, 1.553), (0.0035, 0.004, 0.008)),
-                         M["breu"]))
+    # Máscara de caveira em osso: crânio com arcada, malares e maxila unidos, órbitas e cavidade
+    # nasal recortadas, dentes soltos e mandíbula.
+    cranio = esfera("cranio", 1.0, (0, -0.065, 1.635), (0.074, 0.058, 0.08), sub=5)
+    booleana(cranio, [
+        esfera("arcada", 1.0, (0, -0.109, 1.648), (0.066, 0.02, 0.017), sub=4),
+        esfera("malar-1", 1.0, (-0.047, -0.097, 1.598), (0.022, 0.02, 0.015)),
+        esfera("malar1", 1.0, (0.047, -0.097, 1.598), (0.022, 0.02, 0.015)),
+        esfera("maxila", 1.0, (0, -0.093, 1.574), (0.04, 0.032, 0.027), sub=4),
+    ], "UNION")
+    booleana(cranio, [
+        esfera("orbita-1", 1.0, (-0.029, -0.128, 1.623), (0.022, 0.032, 0.02), sub=4),
+        esfera("orbita1", 1.0, (0.029, -0.128, 1.623), (0.022, 0.032, 0.02), sub=4),
+        esfera("cav_nasal", 1.0, (0, -0.124, 1.593), (0.009, 0.03, 0.015)),
+    ])
+    p.append(em.usar(suave(cranio), M["osso"]))
+    # Fundo das órbitas e do nariz em breu, para não ver o osso por dentro.
+    for nome, c, e in (("fundo-1", (-0.029, -0.088, 1.623), (0.02, 0.006, 0.018)),
+                       ("fundo1", (0.029, -0.088, 1.623), (0.02, 0.006, 0.018)),
+                       ("fundo_nasal", (0, -0.092, 1.593), (0.009, 0.006, 0.014))):
+        p.append(em.usar(esfera(nome, 1.0, c, e, sub=2), M["breu"]))
+    for fila, (z, r, n, alto) in enumerate(((1.555, 0.036, 8, 0.0075), (1.540, 0.033, 8, 0.0065))):
+        for k in range(n):
+            a = math.radians(-42 + 84 * k / (n - 1))
+            p.append(em.usar(caixa(f"dente{fila}_{k}", (r * math.sin(a), -0.077 - r * math.cos(a), z),
+                                   (0.0042, 0.0035, alto), 0.002, (0, 0, a)), M["osso"]))
+    mandibula = esfera("mandibula", 1.0, (0, -0.083, 1.527), (0.043, 0.034, 0.013), sub=4)
+    p.append(em.usar(suave(mandibula), M["osso"]))
     p.append(em.usar(gema("gema_testa", 0.012, (0, -0.118, 1.672)), M["runa"]))
     return p
 
@@ -244,7 +265,7 @@ def roupa(M):
 
     casaco = casca("casaco", PERFIL_CASACO, abertura, seg=72, escala_y=ESCALA_Y_CASACO, dobra=pregas)
     em.usar(casaco, M["casaco"])
-    p.append(engrossar(liso(casaco), 0.014))
+    p.append(engrossar(amassar(casaco, 0.006, 0.07), 0.014))
     # Cravos violeta na barra.
     z = PERFIL_CASACO[-1][1] + 0.025
     a0 = abertura(z)
@@ -267,7 +288,7 @@ def roupa(M):
 
     tab = grade("tabardo", 9, 18, ponto_tabardo)
     em.usar(tab, M["tabardo"])
-    p.append(engrossar(suave(tab), 0.008))
+    p.append(engrossar(amassar(tab, 0.003, 0.05), 0.008))
     p.append(em.usar(gema("gema_peito", 0.019, (0, -ESCALA_Y_TRONCO * r_tronco(1.33) - 0.02, 1.33)),
                      M["runa"]))
     p.append(em.usar(suave(em.anel("engaste_peito", 0.022, 0.005, 16, 6,
@@ -293,7 +314,7 @@ def roupa(M):
 
     capa = grade("capa", 40, 26, ponto_capa)
     em.usar(capa, M["capa"])
-    p.append(engrossar(liso(capa), 0.01))
+    p.append(engrossar(amassar(capa, 0.007, 0.08), 0.01))
     return p
 
 

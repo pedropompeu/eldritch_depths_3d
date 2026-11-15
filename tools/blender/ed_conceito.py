@@ -130,6 +130,43 @@ def liso(obj, nivel=1):
     return suave(obj)
 
 
+def aplicar(obj):
+    """Aplica os modificadores do objeto na malha (sem operador, pelo depsgraph)."""
+    dg = bpy.context.evaluated_depsgraph_get()
+    malha = bpy.data.meshes.new_from_object(obj.evaluated_get(dg))
+    obj.modifiers.clear()
+    obj.data = malha
+    return obj
+
+
+def booleana(obj, outros, operacao="DIFFERENCE"):
+    """Une ou recorta `outros` em `obj` (solver exato) e apaga os outros da cena."""
+    for o in outros:
+        aplicar(o)
+        mod = obj.modifiers.new("bool", "BOOLEAN")
+        mod.operation = operacao
+        mod.solver = "EXACT"
+        mod.object = o
+        aplicar(obj)
+        bpy.data.objects.remove(o)
+    return obj
+
+
+def amassar(obj, forca=0.006, escala=0.06, nivel=2):
+    """Rugas finas de pano: subdivide e desloca pela normal com um ruído de nuvens."""
+    mod = obj.modifiers.new("liso", "SUBSURF")
+    mod.levels = mod.render_levels = nivel
+    tex = bpy.data.textures.new(obj.name + "_rugas", "CLOUDS")
+    tex.noise_scale = escala
+    tex.noise_depth = 3
+    desl = obj.modifiers.new("rugas", "DISPLACE")
+    desl.texture = tex
+    desl.texture_coords = "LOCAL"
+    desl.strength = forca
+    desl.mid_level = 0.5
+    return suave(obj)
+
+
 def mao(nome, pulso, d, n, palma=0.085, largura=0.08, espessura=0.028, dedo=0.08, raio=0.0105,
         curva=0.35, ponta=0.85):
     """Mão com palma, quatro dedos de duas falanges e polegar. `d` = direção do braço (para os
@@ -247,8 +284,75 @@ def acabamento(nt, cor, ao=0.6, borda=None, forca_borda=1.0):
     return saida
 
 
+def _no(nt, tipo, entradas=None, **props):
+    no = nt.nodes.new(tipo)
+    for k, v in props.items():
+        setattr(no, k, v)
+    for k, v in (entradas or {}).items():
+        if isinstance(v, bpy.types.NodeSocket):
+            nt.links.new(v, no.inputs[k])
+        else:
+            no.inputs[k].default_value = v
+    return no
+
+
+def _soma(nt, a, b, peso_b=1.0):
+    return _no(nt, "ShaderNodeMath", {0: b, 1: peso_b, 2: a}, operation="MULTIPLY_ADD").outputs[0]
+
+
+def relevo(nt, bsdf, tipo, forca=1.0, rugosidade=0.6):
+    """Relevo físico por tipo de superfície (Bump na normal) e rugosidade que varia: couro
+    granulado e vincado, aço martelado e riscado, pano com trama e amassado, osso poroso e
+    rachado. Coordenadas de objeto, então o desenho não depende de UV."""
+    obj = _no(nt, "ShaderNodeTexCoord").outputs["Object"]
+
+    def ruido(escala, detalhe=4.0, vetor=None, esticar=None):
+        v = vetor or obj
+        if esticar:
+            v = _no(nt, "ShaderNodeVectorMath", {0: v, 1: esticar}, operation="MULTIPLY").outputs[0]
+        return _no(nt, "ShaderNodeTexNoise", {"Vector": v, "Scale": escala, "Detail": detalhe,
+                                               "Roughness": 0.6}).outputs["Fac"]
+
+    def voronoi(escala, saida="Distance", feature="F1"):
+        return _no(nt, "ShaderNodeTexVoronoi", {"Vector": obj, "Scale": escala},
+                   feature=feature).outputs[saida]
+
+    if tipo == "pele":
+        altura = _soma(nt, voronoi(45.0), ruido(110.0, 6.0), 0.6)
+        risco = ruido(8.0, 4.0)
+        dist = 0.002
+    elif tipo == "couro":
+        altura = _soma(nt, voronoi(260.0), ruido(9.0, 8.0, esticar=(1.0, 1.0, 5.0)), 1.4)
+        risco = ruido(14.0, 6.0)
+        dist = 0.0025
+    elif tipo == "aco":
+        martelo = voronoi(32.0, "Distance", "SMOOTH_F1")
+        risco = ruido(3.0, 12.0, esticar=(1.0, 1.0, 45.0))
+        altura = _soma(nt, martelo, risco, 0.35)
+        dist = 0.0012
+    elif tipo == "pano":
+        trama = _no(nt, "ShaderNodeTexWave", {"Vector": obj, "Scale": 420.0, "Distortion": 1.5},
+                    wave_type="BANDS", bands_direction="DIAGONAL").outputs["Fac"]
+        altura = _soma(nt, trama, ruido(6.0, 6.0), 3.0)
+        risco = ruido(11.0, 5.0)
+        dist = 0.003
+    else:  # osso
+        racha = voronoi(16.0, "Distance", "DISTANCE_TO_EDGE")
+        racha = _no(nt, "ShaderNodeMapRange", {"Value": racha, "From Min": 0.0, "From Max": 0.04}).outputs[0]
+        altura = _soma(nt, ruido(60.0, 8.0), racha, 2.0)
+        risco = ruido(20.0, 6.0)
+        dist = 0.002
+    bump = _no(nt, "ShaderNodeBump", {"Height": altura, "Strength": 0.55 * forca, "Distance": dist})
+    nt.links.new(bump.outputs["Normal"], bsdf.inputs["Normal"])
+    rug = _no(nt, "ShaderNodeMapRange", {"Value": risco, "From Min": 0.3, "From Max": 0.7,
+                                          "To Min": rugosidade * 0.75, "To Max": min(1.0, rugosidade * 1.25)})
+    nt.links.new(rug.outputs[0], bsdf.inputs["Roughness"])
+    return altura
+
+
 def material(nome, cor, rugosidade=0.7, metalico=0.0, variacao=0.0, emissao=0.0, ao=0.6,
-             borda=None):
+             borda=None, superficie=None, forca_relevo=1.0):
+    """`superficie` ("couro", "aco", "pano", "osso") liga o relevo físico de `relevo`."""
     m, nt, bsdf = em.mat(nome)
     bsdf.inputs["Roughness"].default_value = rugosidade
     bsdf.inputs["Metallic"].default_value = metalico
@@ -264,6 +368,15 @@ def material(nome, cor, rugosidade=0.7, metalico=0.0, variacao=0.0, emissao=0.0,
         bsdf.inputs["Emission Strength"].default_value = emissao
     else:
         nt.links.new(acabamento(nt, base, ao, borda), bsdf.inputs["Base Color"])
+        if superficie:
+            relevo(nt, bsdf, superficie, forca_relevo, rugosidade)
+        if superficie == "pele":
+            # Pele úmida: luz entra um pouco (subsuperfície) e uma película brilhante por cima.
+            bsdf.inputs["Subsurface Weight"].default_value = 0.35
+            bsdf.inputs["Subsurface Radius"].default_value = (0.8, 0.25, 0.6)
+            bsdf.inputs["Subsurface Scale"].default_value = 0.01
+            bsdf.inputs["Coat Weight"].default_value = 0.25
+            bsdf.inputs["Coat Roughness"].default_value = 0.35
     return m
 
 
@@ -311,7 +424,8 @@ def imagem_runas(largura=128, altura=1024, linhas=11, semente=7):
     return img
 
 
-def mat_runas(nome, base, cor_runa, rugosidade=0.55, metalico=0.3, brilho=0.0, cor_barra=None):
+def mat_runas(nome, base, cor_runa, rugosidade=0.55, metalico=0.3, brilho=0.0, cor_barra=None,
+              faixas=True, sujeira=0.0, superficie=None):
     """Pano ou placa pela UV da grade (u na largura, v na altura): barra nas bordas, uma coluna
     central de runas gravadas (`imagem_runas`), faixas finas na horizontal e o resto liso. Com
     `cor_barra`, barra e faixas usam essa cor e só as runas levam `cor_runa` e brilho (guia: runa
@@ -339,6 +453,8 @@ def mat_runas(nome, base, cor_runa, rugosidade=0.55, metalico=0.3, brilho=0.0, c
     du = op("ABSOLUTE", op("SUBTRACT", sep.outputs["X"], 0.5))           # 0 no centro, 0,5 na borda
     borda = op("GREATER_THAN", du, 0.43)
     faixa = op("LESS_THAN", op("PINGPONG", op("MULTIPLY", sep.outputs["Y"], 7.0), 0.5), 0.03)
+    if not faixas:
+        faixa = op("MULTIPLY", faixa, 0.0)
     # Coluna central (u de 0,3 a 0,7) com a textura de runas, sem repetir.
     mapa = N.new("ShaderNodeVectorMath")
     mapa.operation = "MULTIPLY_ADD"
@@ -359,7 +475,16 @@ def mat_runas(nome, base, cor_runa, rugosidade=0.55, metalico=0.3, brilho=0.0, c
     else:
         fac = op("MAXIMUM", ornato, runa)
         cor = em.mistura(nt, fac, em.rgba(base), em.rgba(cor_runa))
+    if sujeira:
+        # Barra encardida: escurece de baixo (v = 1) para cima, com borda irregular.
+        irregular = em.ruido(nt, 9.0, 3.0).outputs["Fac"]
+        # UV da grade: y = 1 em cima, 0 na barra.
+        sobe = op("SUBTRACT", op("ADD", op("MULTIPLY", irregular, 0.25), 1.0), sep.outputs["Y"])
+        grau = op("MULTIPLY", op("POWER", op("MINIMUM", op("MAXIMUM", op("MULTIPLY", op("SUBTRACT", sobe, 0.55), 2.2), 0.0), 1.0), 1.3), sujeira)
+        cor = em.mistura(nt, op("MINIMUM", grau, 1.0), cor, (0.10, 0.075, 0.06, 1.0))
     nt.links.new(acabamento(nt, cor, 0.5), bsdf.inputs["Base Color"])
+    if superficie:
+        relevo(nt, bsdf, superficie, 1.0, rugosidade)
     if brilho:
         nt.links.new(cor, bsdf.inputs["Emission Color"])
         forca = N.new("ShaderNodeMath")
@@ -386,12 +511,27 @@ def render(pasta, alvo_z=0.92, tamanho=1024, escala_orto=2.0, amostras=96):
     cena.render.resolution_x = cena.render.resolution_y = tamanho
     cena.render.image_settings.file_format = "PNG"
     cena.render.image_settings.color_mode = "RGBA"
-    cena.view_settings.view_transform = "Standard"
+    cena.view_settings.view_transform = "AgX"
+    try:
+        cena.view_settings.look = "AgX - Medium High Contrast"
+    except TypeError:
+        pass
     cena.render.use_freestyle = False
 
     mundo = bpy.data.worlds.new("conceito")
     mundo.use_nodes = True
-    fundo = mundo.node_tree.nodes["Background"]
+    wt = mundo.node_tree
+    fundo = wt.nodes["Background"]
+    # Céu em degradê (chão escuro, horizonte médio, alto claro): o metal tem o que refletir.
+    direcao = wt.nodes.new("ShaderNodeTexCoord")
+    sep = wt.nodes.new("ShaderNodeSeparateXYZ")
+    wt.links.new(direcao.outputs["Generated"], sep.inputs["Vector"])
+    altura = wt.nodes.new("ShaderNodeMapRange")
+    altura.inputs["From Min"].default_value = -1.0
+    wt.links.new(sep.outputs["Z"], altura.inputs["Value"])
+    ceu = em.rampa(wt, altura.outputs["Result"], [(0.0, (0.06, 0.06, 0.07, 1)), (0.48, (0.32, 0.32, 0.34, 1)),
+                                          (0.56, (0.55, 0.55, 0.58, 1)), (1.0, (0.95, 0.95, 0.97, 1))])
+    ligacao_ceu = wt.links.new(ceu.outputs["Color"], fundo.inputs["Color"])
     cena.world = mundo
     sol = bpy.data.objects.new("sol", bpy.data.lights.new("sol", "SUN"))
     sol.data.angle = math.radians(25)
@@ -430,8 +570,7 @@ def render(pasta, alvo_z=0.92, tamanho=1024, escala_orto=2.0, amostras=96):
 
     # Folha: luz neutra.
     cena.render.film_transparent = True
-    fundo.inputs["Color"].default_value = (0.55, 0.55, 0.57, 1)
-    fundo.inputs["Strength"].default_value = 0.8
+    fundo.inputs["Strength"].default_value = 0.9
     sol.data.energy = 2.6
     heroi.data.energy = contra.data.energy = 0.0
     vistas = [
@@ -449,6 +588,7 @@ def render(pasta, alvo_z=0.92, tamanho=1024, escala_orto=2.0, amostras=96):
 
     # Prova de luz do jogo: breu, luz quente do herói por cima e na frente, fio violeta atrás.
     cena.render.film_transparent = False
+    wt.links.remove(ligacao_ceu)
     fundo.inputs["Color"].default_value = em.rgba(em.BREU)
     fundo.inputs["Strength"].default_value = 1.0
     sol.data.energy = 0.0
