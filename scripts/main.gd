@@ -2,7 +2,8 @@ extends Node3D
 ## Cena principal do Bloco 1A: sala cinza, herói, câmera, um inimigo e a parede
 ## do Véu. Liga o dreno ambiente de sanidade, repassa a faixa do Véu do herói às
 ## paredes do Véu, desenha a vinheta da sanidade, liga o HUD e recarrega a cena
-## 2 s depois da morte do herói.
+## 2 s depois da morte do herói. Com `-- --autoplay`, o herói joga sozinho e o
+## inimigo reaparece (para medir fps).
 
 const AMBIENT_SANITY_DRAIN := 0.8
 const RELOAD_DELAY := 2.0
@@ -11,10 +12,18 @@ const VIGNETTE_START := 60.0
 ## Quanto a tecla de depuração (F9) tira de sanidade.
 const DEBUG_SANITY_DROP := 20.0
 const SANITY_ARG := "--sanity="
+const AUTOPLAY_ARG := "--autoplay"
+## No modo automático, o inimigo reaparece este tempo depois de morrer.
+const ENEMY_RESPAWN_DELAY := 2.0
+const AutoplayInput := preload("res://scripts/autoplay_input.gd")
+const EnemyScene := preload("res://scenes/enemies/enemy_common.tscn")
 
 @onready var hero: Player3D = $Player3D
 @onready var vignette: ColorRect = $VignetteLayer/Vignette
 @onready var hud: HudMinimal = $HudLayer/HudMinimal
+@onready var enemy: EnemyCommon = $EnemyCommon
+
+var _enemy_spawn: Transform3D
 
 
 func _ready() -> void:
@@ -25,6 +34,8 @@ func _ready() -> void:
 	_on_sanity_changed(hero.stats.current_sanity, hero.stats.max_sanity)
 	hud.bind(hero.get_node("Stats"))
 	_apply_sanity_arg()
+	if has_autoplay_arg(OS.get_cmdline_user_args()):
+		enable_autoplay()
 
 
 ## Intensidade da vinheta (0 a 1) para a sanidade dada: nada até 60, cheia em 0.
@@ -40,6 +51,26 @@ static func sanity_from_args(args: PackedStringArray) -> float:
 			if valor.is_valid_float():
 				return valor.to_float()
 	return -1.0
+
+
+static func has_autoplay_arg(args: PackedStringArray) -> bool:
+	return args.has(AUTOPLAY_ARG)
+
+
+## Põe o herói no piloto automático e faz o inimigo reaparecer onde estava.
+func enable_autoplay() -> void:
+	hero.input_source = AutoplayInput.make(Time.get_ticks_msec())
+	_enemy_spawn = enemy.global_transform
+	enemy.enemy_died.connect(_on_enemy_died)
+
+
+func _on_enemy_died() -> void:
+	await get_tree().create_timer(ENEMY_RESPAWN_DELAY).timeout
+	enemy = EnemyScene.instantiate()
+	enemy.target = hero
+	add_child(enemy)
+	enemy.global_transform = _enemy_spawn
+	enemy.enemy_died.connect(_on_enemy_died)
 
 
 func _unhandled_input(event: InputEvent) -> void:
