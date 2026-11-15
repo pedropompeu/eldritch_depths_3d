@@ -19,7 +19,7 @@ Plano: `docs/superpowers/plans/2026-11-14-tela-e-sensacao-trilha-jogo.md`
 | T05 | Busca de autoload | simples | T02 | feita | claude-opus-5-5 | 2026-11-14 | 95426d6 | OK: 6 testes; teste usa get_node_or_null em vez de get_node (ver rulings) |
 | T06 | Faixas do Véu | simples | T02 | feita | claude-opus-5-5 | 2026-11-14 | 862f575 | OK: 13 testes; teste extra da ordem das faixas |
 | T07 | StatsComponent portado | médio | T05, T06 | livre | | | | |
-| T08 | Máquina de estados | simples | T02 | livre | | | | |
+| T08 | Máquina de estados | simples | T02 | feita | claude-opus-5-5 | 2026-11-14 | b1dbbd1 | OK: 15 testes; chave inexistente dá push_warning |
 | T09 | Matemática de movimento | simples | T02 | feita | claude-opus-5-5 | 2026-11-14 | 7d0e957 | OK: 11 testes (5 novos) |
 | T10 | Modo de entrada | médio | T03, T05 | livre | | | | |
 | T11 | Mira | médio | T02 | livre | | | | |
@@ -57,3 +57,5 @@ Formato: `- [data] T<nn> · modelo · <o que foi decidido> — <por quê> — <c
 - [2026-11-14] T02b · claude-opus-5-5 · Runner endurecido depois da T04 (commit 291fc4f): erro da engine durante o teste vira falha, script que não instancia reprova na carga, vigia de 30 s por teste — sem isso um teste quebrado passava e um erro de sintaxe travava a suíte (achado A03) — teste que usa `push_error` de propósito agora reprova; usar `push_warning`.
 - [2026-11-14] T05 · claude-opus-5-5 · O teste busca `/root/Autoloads` com `get_node_or_null` e checa nulo antes, em vez do `get_node` do plano — com `get_node`, a ausência do autoload virava erro de script e o teste parava antes do assert; agora falha com mensagem clara — nenhum.
 - [2026-11-14] T05 e T09 · claude-opus-5-5 · Sem commits `docs: start T<nn>` — feitas em sequência numa sessão só, sem outro modelo em paralelo — nenhum.
+- [2026-11-14] T08 · claude-opus-5-5 · `transition_to(String)` do 2D virou `change_state(StringName)` (contrato da T08) e o `@export var initial_state` do 2D ficou como opcional: sem ele, `init` entra no primeiro estado filho — mantém o contrato e deixa a cena escolher outro estado inicial sem código — se alguém preencher `initial_state` por engano, a máquina começa em outro estado.
+- [2026-11-14] T06–T16 · claude-opus-5-5 · Sem commits `docs: start T<nn>` — feitas em sequência numa sessão só, sem outro modelo em paralelo — nenhum.
