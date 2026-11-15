@@ -29,7 +29,7 @@ Plano: `docs/superpowers/plans/2026-11-14-tela-e-sensacao-trilha-jogo.md`
 | T15 | Hitbox e hurtbox 3D | difícil | T02 | feita | claude-opus-5-5 | 2026-11-14 | 8fba6d9 | OK: 67 testes; 3 testes extras (inimigo acerta herói, entrar ativa, entrar inativa) |
 | T16 | Postura | simples | T02 | feita | claude-opus-5-5 | 2026-11-14 | 4453290 | OK: 59 testes; escala invertida e sem espera de 2,2 s em relação ao 2D (ver rulings) |
 | T17 | Herói: cena, parado e andar | difícil | T07–T11, T13, T15, T16 | feita | claude-opus-5-5 | 2026-11-14 | 5b521c9 | 4 testes; cena roda sem avisos |
-| T18 | Ataque em dois golpes | difícil | T14, T17 | livre | | | | |
+| T18 | Ataque em dois golpes | difícil | T14, T17 | feita | claude-opus-5-5 | 2026-11-14 | d77e066 | 4 testes; suíte 75 |
 | T19 | Esquiva | difícil | T14, T17 | livre | | | | |
 | T20 | Parry | médio | T17 | livre | | | | |
 | T21 | Dano, morte e frascos | médio | T20 | livre | | | | |
@@ -67,3 +67,5 @@ Formato: `- [data] T<nn> · modelo · <o que foi decidido> — <por quê> — <c
 - [2026-11-14] T17 · claude-opus-5-5 · `move` só volta a `idle` quando a velocidade horizontal zera (< 0,01 m/s); a frenagem acontece em `move` — é a leitura literal de "idle com velocidade zero" — custo se errado: troca de uma condição em `move.gd`.
 - [2026-11-14] T17 · claude-opus-5-5 · Além do contrato, o `Player3D` expõe `input` (entrada do passo), `walk(delta)`, `face(dir)`, `horizontal_speed()` e `is_pad()` para os estados da T18–T20; campos ausentes no dicionário injetado caem no valor vazio — evita cada estado repetir a física e os testes de montar o dicionário inteiro — custo se errado: renomear helpers.
 - [2026-11-14] T17 · claude-opus-5-5 · Valores que o plano não fixa: raio do mouse sai da câmera atual da viewport (no jogo, a do rig); hurtbox cápsula r 0,4 m × 1,8 m; espada e corpo centrados a 0,9 m de altura; seta de mira cone de 0,6 m a 0,9 m dos pés — custo se errado: ajuste na cena, sem código.
+- [2026-11-14] T18 · claude-opus-5-5 · Quem decide se o ataque sai é o próprio estado (`attack.try_begin()`, chamado por `idle`/`move` via `Player3D.try_attack()`): gasta o vigor antes de trocar de estado, então sem vigor nada muda — mantém custo e combo num arquivo só — custo se errado: mover a checagem.
+- [2026-11-14] T18 · claude-opus-5-5 · A janela de combo é só a recuperação, sem guardar o aperto feito no preparo ou na fase ativa; apertar na recuperação do golpe 2 encadeia o golpe 1 (18 de vigor) — leitura literal do plano — custo se errado: se o combo parecer duro no teste de Pedro (T32), acrescentar um buffer de entrada.
