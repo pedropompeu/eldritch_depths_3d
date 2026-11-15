@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3]
+[gd_scene load_steps=17 format=3]
 
 [ext_resource type="Script" path="res://scripts/enemies/enemy_common.gd" id="1_enemy"]
 [ext_resource type="Script" path="res://scripts/components/stats_component.gd" id="2_stats"]
@@ -6,6 +6,9 @@
 [ext_resource type="Script" path="res://scripts/state_machine/state_machine.gd" id="4_sm"]
 [ext_resource type="Script" path="res://scripts/enemies/states/idle.gd" id="5_idle"]
 [ext_resource type="Script" path="res://scripts/enemies/states/chase.gd" id="6_chase"]
+[ext_resource type="Script" path="res://scripts/enemies/states/telegraph.gd" id="9_telegraph"]
+[ext_resource type="Script" path="res://scripts/enemies/states/attack.gd" id="10_attack"]
+[ext_resource type="Script" path="res://scripts/enemies/states/cooldown.gd" id="11_cooldown"]
 [ext_resource type="Script" path="res://scripts/combat/hitbox_3d.gd" id="7_hitbox"]
 [ext_resource type="Script" path="res://scripts/combat/hurtbox_3d.gd" id="8_hurtbox"]
 
@@ -54,6 +57,15 @@ script = ExtResource("5_idle")
 
 [node name="Chase" type="Node" parent="StateMachine"]
 script = ExtResource("6_chase")
+
+[node name="Telegraph" type="Node" parent="StateMachine"]
+script = ExtResource("9_telegraph")
+
+[node name="Attack" type="Node" parent="StateMachine"]
+script = ExtResource("10_attack")
+
+[node name="Cooldown" type="Node" parent="StateMachine"]
+script = ExtResource("11_cooldown")
 
 [node name="Claw" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.8, -0.8)

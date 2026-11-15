@@ -1,6 +1,6 @@
 extends State
 ## Perseguição em linha reta (sem navegação neste bloco). No alcance de ataque,
-## para e continua aqui; a T23 passa a ir para `telegraph`.
+## para e começa o aviso do golpe (`telegraph`).
 
 
 func process_physics(_delta: float) -> void:
@@ -11,5 +11,6 @@ func process_physics(_delta: float) -> void:
 	actor.face(dir)
 	if actor.distance_to_target() <= actor.attack_range:
 		actor.set_horizontal_velocity(Vector3.ZERO)
+		state_machine.change_state(&"telegraph")
 		return
 	actor.set_horizontal_velocity(dir * actor.move_speed)

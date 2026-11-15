@@ -65,7 +65,8 @@ func test_para_no_alcance(tree: SceneTree) -> void:
 	var m: Array = await _montar(tree, 1.2)
 	var inimigo: EnemyCommon = m[1]
 	_passos(inimigo, 10)
-	assert_eq(inimigo.state_machine.current_state.name, &"Chase")
+	# Desde a T23, parar no alcance já começa o aviso do golpe.
+	assert_eq(inimigo.state_machine.current_state.name, &"Telegraph")
 	assert_near(_horizontal(inimigo.velocity), 0.0, 0.001)
 	m[0].queue_free()
 

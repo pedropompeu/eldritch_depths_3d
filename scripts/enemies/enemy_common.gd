@@ -1,10 +1,14 @@
 class_name EnemyCommon
 extends CharacterBody3D
 ## Inimigo comum provisório (cápsula escura). Fica parado até o alvo entrar na
-## detecção, então anda em linha reta até ele e para no alcance de ataque. A
-## T23 troca a parada no alcance pelo `telegraph`.
+## detecção, então anda em linha reta até ele; no alcance, avisa (`telegraph`),
+## bate (`attack`) e recarrega (`cooldown`) antes de voltar a perseguir.
 
 const GRAVITY := 20.0
+## Folga nas durações dos estados: soma de passos de 1/60 s não fecha exata.
+const TIME_EPS := 0.0001
+const TELEGRAPH_COLOR := Color("#ff2020")
+const TELEGRAPH_ENERGY := 2.0
 
 @export var target: Node3D
 ## Inimigo cósmico: seus golpes também tiram sanidade (a partir da T23).
@@ -57,6 +61,17 @@ func direction_to_target() -> Vector3:
 
 func can_see_target() -> bool:
 	return distance_to_target() <= detection_range
+
+
+## Liga ou desliga o vermelho emissivo do aviso no material do corpo.
+func set_telegraph_glow(on: bool) -> void:
+	var mat := body.mesh.material as StandardMaterial3D
+	if mat == null:
+		return
+	mat.emission_enabled = on
+	if on:
+		mat.emission = TELEGRAPH_COLOR
+		mat.emission_energy_multiplier = TELEGRAPH_ENERGY
 
 
 func set_horizontal_velocity(v: Vector3) -> void:
