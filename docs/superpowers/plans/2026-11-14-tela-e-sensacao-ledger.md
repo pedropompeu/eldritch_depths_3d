@@ -30,7 +30,7 @@ Plano: `docs/superpowers/plans/2026-11-14-tela-e-sensacao-trilha-jogo.md`
 | T16 | Postura | simples | T02 | feita | claude-opus-5-5 | 2026-11-14 | 4453290 | OK: 59 testes; escala invertida e sem espera de 2,2 s em relação ao 2D (ver rulings) |
 | T17 | Herói: cena, parado e andar | difícil | T07–T11, T13, T15, T16 | feita | claude-opus-5-5 | 2026-11-14 | 5b521c9 | 4 testes; cena roda sem avisos |
 | T18 | Ataque em dois golpes | difícil | T14, T17 | feita | claude-opus-5-5 | 2026-11-14 | d77e066 | 4 testes; suíte 75 |
-| T19 | Esquiva | difícil | T14, T17 | livre | | | | |
+| T19 | Esquiva | difícil | T14, T17 | feita | claude-opus-5-5 | 2026-11-14 | 9b13cb5 | 4 testes; suíte 79 |
 | T20 | Parry | médio | T17 | livre | | | | |
 | T21 | Dano, morte e frascos | médio | T20 | livre | | | | |
 | T22 | Inimigo: perseguição | médio | T07, T08, T15, T16 | livre | | | | |
@@ -69,3 +69,5 @@ Formato: `- [data] T<nn> · modelo · <o que foi decidido> — <por quê> — <c
 - [2026-11-14] T17 · claude-opus-5-5 · Valores que o plano não fixa: raio do mouse sai da câmera atual da viewport (no jogo, a do rig); hurtbox cápsula r 0,4 m × 1,8 m; espada e corpo centrados a 0,9 m de altura; seta de mira cone de 0,6 m a 0,9 m dos pés — custo se errado: ajuste na cena, sem código.
 - [2026-11-14] T18 · claude-opus-5-5 · Quem decide se o ataque sai é o próprio estado (`attack.try_begin()`, chamado por `idle`/`move` via `Player3D.try_attack()`): gasta o vigor antes de trocar de estado, então sem vigor nada muda — mantém custo e combo num arquivo só — custo se errado: mover a checagem.
 - [2026-11-14] T18 · claude-opus-5-5 · A janela de combo é só a recuperação, sem guardar o aperto feito no preparo ou na fase ativa; apertar na recuperação do golpe 2 encadeia o golpe 1 (18 de vigor) — leitura literal do plano — custo se errado: se o combo parecer duro no teste de Pedro (T32), acrescentar um buffer de entrada.
+- [2026-11-14] T19 · claude-opus-5-5 · O teste de travada conta os sinais `Hurtbox.hurt` (0 durante a esquiva) e tem um controle (o mesmo golpe acerta o herói parado), porque "vida continua 100" passaria sem esquiva nenhuma: até a T20 nada aplica dano no herói. O golpe é ativado logo depois do passo de 0,22 s, que é a ordem do frame no jogo (o herói marca a invencibilidade antes de os golpes chegarem) — custo se errado: nenhum no código; só o teste é mais exigente que o plano.
+- [2026-11-14] T19 · claude-opus-5-5 · A esquiva sai só de `idle` e `move` (não cancela o ataque), tem direção fixa ao começar e mantém 10,4 m/s até o fim, sem frear; ao sair, `move`/`idle` freiam com `DECEL` — o plano não fala em cancelar ataque nem em curva de velocidade — custo se errado: se Pedro quiser cancelar a recuperação do ataque com esquiva (comum em soulslike), é uma checagem em `attack.gd`.
