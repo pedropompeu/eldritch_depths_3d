@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=10 format=3]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="PackedScene" path="res://scenes/world/greybox_room.tscn" id="2_room"]
@@ -7,6 +7,7 @@
 [ext_resource type="PackedScene" path="res://scenes/enemies/enemy_common.tscn" id="5_enemy"]
 [ext_resource type="PackedScene" path="res://scenes/world/veil_wall.tscn" id="6_veil"]
 [ext_resource type="Shader" path="res://shaders/veil_vignette.gdshader" id="7_vignette"]
+[ext_resource type="PackedScene" path="res://scenes/ui/hud_minimal.tscn" id="8_hud"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vignette"]
 shader = ExtResource("7_vignette")
@@ -41,3 +42,8 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
+
+[node name="HudLayer" type="CanvasLayer" parent="."]
+layer = 2
+
+[node name="HudMinimal" parent="HudLayer" instance=ExtResource("8_hud")]

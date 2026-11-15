@@ -1,8 +1,8 @@
 extends Node3D
 ## Cena principal do Bloco 1A: sala cinza, herói, câmera, um inimigo e a parede
 ## do Véu. Liga o dreno ambiente de sanidade, repassa a faixa do Véu do herói às
-## paredes do Véu, desenha a vinheta da sanidade e recarrega a cena 2 s depois
-## da morte do herói.
+## paredes do Véu, desenha a vinheta da sanidade, liga o HUD e recarrega a cena
+## 2 s depois da morte do herói.
 
 const AMBIENT_SANITY_DRAIN := 0.8
 const RELOAD_DELAY := 2.0
@@ -14,6 +14,7 @@ const SANITY_ARG := "--sanity="
 
 @onready var hero: Player3D = $Player3D
 @onready var vignette: ColorRect = $VignetteLayer/Vignette
+@onready var hud: HudMinimal = $HudLayer/HudMinimal
 
 
 func _ready() -> void:
@@ -22,6 +23,7 @@ func _ready() -> void:
 	hero.stats.veil_band_changed.connect(_on_veil_band_changed)
 	hero.stats.sanity_changed.connect(_on_sanity_changed)
 	_on_sanity_changed(hero.stats.current_sanity, hero.stats.max_sanity)
+	hud.bind(hero.get_node("Stats"))
 	_apply_sanity_arg()
 
 
