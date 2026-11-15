@@ -34,7 +34,7 @@ Plano: `docs/superpowers/plans/2026-11-14-tela-e-sensacao-trilha-jogo.md`
 | T20 | Parry | médio | T17 | feita | claude-opus-5-5 | 2026-11-14 | 5ec3a2a | 3 testes; suíte 82 |
 | T21 | Dano, morte e frascos | médio | T20 | feita | claude-opus-5-5 | 2026-11-14 | cf08433 | OK: 86 testes |
 | T22 | Inimigo: perseguição | médio | T07, T08, T15, T16 | feita | claude-opus-5-5 | 2026-11-14 | 5a1caf8 | OK: 91 testes |
-| T23 | Inimigo: aviso, golpe e recarga | médio | T14, T22 | livre | | | | |
+| T23 | Inimigo: aviso, golpe e recarga | médio | T14, T22 | feita | claude-opus-5-5 | 2026-11-14 | 59cd72c | OK: 97 testes |
 | T24 | Inimigo: atordoado e morte | médio | T23 | livre | | | | |
 | T25 | Sala cinza, luz e main | médio | T21, T24 | livre | | | | |
 | T26 | Parede do Véu | difícil | T06, T25 | livre | | | | |
@@ -82,3 +82,7 @@ Formato: `- [data] T<nn> · modelo · <o que foi decidido> — <por quê> — <c
 - [2026-11-14] T22 · claude-opus-5-5 · Perseguição sem aceleração (velocidade = `move_speed` já no primeiro passo), inimigo vira para o alvo também parado no alcance; `chase` volta a `idle` quando o alvo sai da detecção; distância medida no plano XZ — o brief só pede "≈ 2,4" e "linha reta" — custo se errado: sensação de arranque seco; ajuste em `chase.gd`.
 - [2026-11-14] T22 · claude-opus-5-5 · Material do corpo dentro da `CapsuleMesh`, com malha e material `resource_local_to_scene` (cada instância tem o seu), e não em `surface_material_override`, que dá erro no renderizador vazio do modo headless — custo se errado: nenhum; teste extra `test_material_proprio_por_inimigo` (verificado quebrando a cena) e `test_sem_alvo_fica_parado` além dos 3 do brief.
 - [2026-11-14] T22 · claude-opus-5-5 · Valores não fixados: cápsula r0,35 / h1,6 (hurtbox r0,4), garra caixa 1×1×1,2 a 0,8 m à frente e 0,8 m de altura, cor (0,12; 0,1; 0,16) — custo se errado: só ajuste visual/alcance na T23.
+- [2026-11-14] T23 · claude-opus-5-5 · Garra ativada na entrada do `attack` (acerta na hora quem já está sobreposto) e desligada na saída; durações contadas por soma de `delta` com folga de 0,0001 s; inimigo parado (velocidade horizontal zero) em `telegraph`, `attack` e `cooldown` — o brief só fixa as durações — custo se errado: golpe sem avanço; ajuste nos estados.
+- [2026-11-14] T23 · claude-opus-5-5 · O ciclo começa dois passos depois do alvo entrar no alcance partindo de `idle` (idle→chase→telegraph): a máquina de estados troca um estado por passo; os testes usam `_ate_avisar` — custo se errado: 1/60 s de atraso, invisível.
+- [2026-11-14] T23 · claude-opus-5-5 · `test_para_no_alcance` (T22) passa a esperar `Telegraph` em vez de `Chase`, como a própria T23 anuncia; testes extras `test_aviso_brilha_vermelho` e `test_nao_gira_depois_do_aviso` além dos 4 do brief — custo se errado: nenhum, só testes.
+- [2026-11-14] T23 · claude-opus-5-5 · O brilho do aviso só liga/desliga `emission_enabled` no material local do corpo (cor e energia ficam gravadas depois do primeiro aviso) — custo se errado: nenhum visível.
