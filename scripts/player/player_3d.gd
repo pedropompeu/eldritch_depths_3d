@@ -12,6 +12,9 @@ const InputModeScript := preload("res://scripts/core/input_mode.gd")
 const ARROW_OFFSET := 0.9
 const ARROW_HEIGHT := 0.05
 
+## Emitido uma vez, quando o herói morre.
+signal hero_died
+
 @export var camera_rig: CameraRig3D
 @export var base_damage := 20.0
 ## Postura que um parry bem-sucedido enche em quem bateu. (i) ajustável no
@@ -27,6 +30,9 @@ var move_dir: Vector3 = Vector3.ZERO
 var input_source: Callable
 ## Entrada do passo atual (ver `read_input`).
 var input: Dictionary = {}
+## Direção (no plano XZ, comprimento 1) de quem bateu até o herói, no último
+## golpe recebido. O estado `hurt` empurra para cá.
+var last_hit_dir: Vector3 = Vector3.BACK
 
 @onready var stats: StatsComponent = $Stats
 @onready var posture: PostureComponent = $Posture
@@ -44,6 +50,7 @@ func _ready() -> void:
 	sword.source = self
 	sword.damage = base_damage
 	hurtbox.hurt.connect(_on_hurt)
+	stats.died.connect(_on_died)
 	input = _empty_input()
 	state_machine.init(self)
 	_update_arrow()
@@ -68,6 +75,7 @@ func step(delta: float) -> void:
 	var yaw := camera_rig.get_yaw() if camera_rig else 0.0
 	move_dir = PlayerMotion.input_to_world(input.move, yaw)
 	_update_aim(yaw)
+	_use_flasks()
 	state_machine.process_physics(delta)
 	if not is_on_floor():
 		velocity.y -= GRAVITY * delta
@@ -113,10 +121,50 @@ func _on_hurt(hitbox: Hitbox3D) -> void:
 		if alvo:
 			alvo.damage_posture(parry_posture_damage)
 		return
+	if not stats.is_alive():
+		return
+	last_hit_dir = _away_from(hitbox)
 	stats.take_damage(hitbox.damage)
 	stats.drain_sanity(hitbox.sanity_damage)
+	# Se o golpe matou, `_on_died` já levou ao estado `dead`.
 	if stats.is_alive() and state_machine.states.has(&"hurt"):
 		state_machine.change_state(&"hurt")
+
+
+func _on_died() -> void:
+	state_machine.change_state(&"dead")
+	hero_died.emit()
+
+
+func is_dead() -> bool:
+	return _state_is(&"dead")
+
+
+## Frascos valem em qualquer estado, menos `hurt` e `dead`.
+func _use_flasks() -> void:
+	if _state_is(&"hurt") or _state_is(&"dead"):
+		return
+	if input.flask:
+		stats.use_blood_flask()
+	if input.laudanum:
+		stats.use_laudanum_flask()
+
+
+func _state_is(key: StringName) -> bool:
+	var atual := state_machine.current_state
+	return atual != null and state_machine.states.get(key) == atual
+
+
+## Direção de quem bateu (o `source`, ou a própria hitbox) até o herói. Se os
+## dois coincidem no plano, empurra para trás do herói.
+func _away_from(hitbox: Hitbox3D) -> Vector3:
+	var origem: Node3D = hitbox.source if hitbox.source is Node3D else hitbox
+	var d := global_position - origem.global_position
+	d.y = 0.0
+	if d.length() < STOP_EPS:
+		d = global_transform.basis.z
+		d.y = 0.0
+	return d.normalized() if d.length() > STOP_EPS else Vector3.BACK
 
 
 ## O `PostureComponent` filho de `node`, ou `null`.
