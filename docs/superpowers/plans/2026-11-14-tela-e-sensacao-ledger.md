@@ -37,7 +37,7 @@ Plano: `docs/superpowers/plans/2026-11-14-tela-e-sensacao-trilha-jogo.md`
 | T23 | Inimigo: aviso, golpe e recarga | médio | T14, T22 | feita | claude-opus-5-5 | 2026-11-14 | 59cd72c | OK: 97 testes |
 | T24 | Inimigo: atordoado e morte | médio | T23 | feita | claude-opus-5-5 | 2026-11-14 | 93c3840 | OK: 101 testes |
 | T25 | Sala cinza, luz e main | médio | T21, T24 | feita | claude-opus-5-5 | 2026-11-14 | 235c081 | 103 testes; captura descrita no ledger |
-| T26 | Parede do Véu | difícil | T06, T25 | livre | | | | |
+| T26 | Parede do Véu | difícil | T06, T25 | feita | claude-opus-5-5 | 2026-11-14 | 2f35e3f | 108 testes |
 | T27 | Vinheta e tecla de depuração | médio | T26 | livre | | | | |
 | T28 | Rótulos de botão | simples | T10 | livre | | | | |
 | T29 | HUD mínimo | médio | T25, T28 | livre | | | | |
@@ -94,3 +94,7 @@ Formato: `- [data] T<nn> · modelo · <o que foi decidido> — <por quê> — <c
 - [2026-11-14] T25 · claude-opus-5-5 · WorldEnvironment mora em `greybox_room.tscn`, não em `main.tscn`; a "névoa de profundidade com densidade 0,03" virou a névoa exponencial do Godot com `fog_density` 0,03 — custo se errado: mover um nó ou trocar o modo da névoa.
 - [2026-11-14] T25 · claude-opus-5-5 · O corpo e a seta de mira do herói não projetam sombra (`cast_shadow` off) e a HeroLight ganhou `omni_attenuation` 0,5 (fora do brief): sem isso o herói virava um disco preto sob a própria luz e a poça de luz mal passava de 3 m — custo se errado: ajuste visual no teste do Pedro (T32).
 - [2026-11-14] T25 · claude-opus-5-5 · Captura (90 quadros, 1080p, Forward Mobile, RADV): sala quase toda no escuro, poça âmbar de ~4 m em volta do herói com o topo da cápsula aceso e o corpo escuro, paredes e coluna só como silhuetas, seta de mira dourada legível; o inimigo vem até o herói, acende vermelho vivo no aviso (quadro 66) e projeta sombra comprida para longe da luz; no último quadro está em recuperação, escuro, ao lado do herói.
+- [2026-11-14] T26 · claude-opus-5-5 · "Desliga a colisão" virou zerar `collision_layer` do corpo (e `is_solid()` = camada ≠ 0), com a forma sempre ligada — trocar a camada vale no meio de um passo de física (a queda de sanidade chega de dentro de um golpe), desligar a forma não — custo se errado: nenhum visível.
+- [2026-11-14] T26 · claude-opus-5-5 · O material de dissolução é um shader novo, `shaders/veil_dissolve.gdshader` (ruído de valor em duas oitavas, `discard` abaixo de `dissolve`, borda violeta acesa e brilho próprio fraco para a parede ser vista no escuro); mora dentro do `BoxMesh` com `resource_local_to_scene` — custo se errado: só o visual.
+- [2026-11-14] T26 · claude-opus-5-5 · A animação de `dissolve` é um `Tween` que mata o anterior e dura 0,6 s × a distância que falta (abrir no meio do fechamento não reinicia do zero); faixa que volta a `opens_at` cancela o fechamento pendente — custo se errado: nenhum visível.
+- [2026-11-14] T26 · claude-opus-5-5 · Parede posta em `main.tscn` na posição do `DoorSlot` (0; 1,5; −8), não reparentada em tempo de execução; o teste da cena principal confere que as posições coincidem. `Inside` com camada 0, máscara 6 e `monitorable` desligado — custo se errado: mover um nó se o `DoorSlot` mudar.
