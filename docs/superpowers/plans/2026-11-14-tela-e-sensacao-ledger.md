@@ -33,7 +33,7 @@ Plano: `docs/superpowers/plans/2026-11-14-tela-e-sensacao-trilha-jogo.md`
 | T19 | Esquiva | difícil | T14, T17 | feita | claude-opus-5-5 | 2026-11-14 | 9b13cb5 | 4 testes; suíte 79 |
 | T20 | Parry | médio | T17 | feita | claude-opus-5-5 | 2026-11-14 | 5ec3a2a | 3 testes; suíte 82 |
 | T21 | Dano, morte e frascos | médio | T20 | feita | claude-opus-5-5 | 2026-11-14 | cf08433 | OK: 86 testes |
-| T22 | Inimigo: perseguição | médio | T07, T08, T15, T16 | livre | | | | |
+| T22 | Inimigo: perseguição | médio | T07, T08, T15, T16 | feita | claude-opus-5-5 | 2026-11-14 | 5a1caf8 | OK: 91 testes |
 | T23 | Inimigo: aviso, golpe e recarga | médio | T14, T22 | livre | | | | |
 | T24 | Inimigo: atordoado e morte | médio | T23 | livre | | | | |
 | T25 | Sala cinza, luz e main | médio | T21, T24 | livre | | | | |
@@ -78,3 +78,7 @@ Formato: `- [data] T<nn> · modelo · <o que foi decidido> — <por quê> — <c
 - [2026-11-14] T21 · claude-opus-5-5 · Frascos valem em idle, move, attack, roll e parry (só `hurt` e `dead` bloqueiam), consumidos em `step()` antes da máquina de estados — o brief diz "fora de hurt e dead" — custo se errado: o teste de Pedro (T32) pode pedir bloqueio no ataque/esquiva; ajuste de uma linha em `_use_flasks`.
 - [2026-11-14] T21 · claude-opus-5-5 · Golpe em herói morto é ignorado em `_on_hurt` (nem dano, nem sanidade); `hero_died` é emitido por `Stats.died`, que só dispara uma vez — custo se errado: nenhum visível na demo.
 - [2026-11-14] T21 · claude-opus-5-5 · Teste da T19 (`test_esquiva_invencivel_com_travada`) espera 0,35 s depois do golpe de controle, porque o `hurt` ignora a entrada — custo se errado: nenhum, só o teste.
+- [2026-11-14] T22 · claude-opus-5-5 · Corpo do inimigo na camada 3 com máscara só do mundo (1), como o herói: não se empurram fisicamente — o brief não fixa — custo se errado: inimigo e herói se atravessam; trocar a máscara para 1|2 na cena.
+- [2026-11-14] T22 · claude-opus-5-5 · Perseguição sem aceleração (velocidade = `move_speed` já no primeiro passo), inimigo vira para o alvo também parado no alcance; `chase` volta a `idle` quando o alvo sai da detecção; distância medida no plano XZ — o brief só pede "≈ 2,4" e "linha reta" — custo se errado: sensação de arranque seco; ajuste em `chase.gd`.
+- [2026-11-14] T22 · claude-opus-5-5 · Material do corpo dentro da `CapsuleMesh`, com malha e material `resource_local_to_scene` (cada instância tem o seu), e não em `surface_material_override`, que dá erro no renderizador vazio do modo headless — custo se errado: nenhum; teste extra `test_material_proprio_por_inimigo` (verificado quebrando a cena) e `test_sem_alvo_fica_parado` além dos 3 do brief.
+- [2026-11-14] T22 · claude-opus-5-5 · Valores não fixados: cápsula r0,35 / h1,6 (hurtbox r0,4), garra caixa 1×1×1,2 a 0,8 m à frente e 0,8 m de altura, cor (0,12; 0,1; 0,16) — custo se errado: só ajuste visual/alcance na T23.
