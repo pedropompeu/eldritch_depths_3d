@@ -12,6 +12,9 @@ const STICK_DEADZONE := 0.2
 const MOUSE_MIN_MOTION := 2.0
 
 var mode: Mode = Mode.KBM
+## Devolve os controles conectados. O padrão consulta `Input`; os testes
+## injetam outro, para não depender do que está plugado na máquina.
+var connected_joypads: Callable = Input.get_connected_joypads
 
 
 func _ready() -> void:
@@ -40,7 +43,7 @@ func handle_event(event: InputEvent) -> void:
 
 
 func _on_joy_connection_changed(_device: int, connected: bool) -> void:
-	if not connected and Input.get_connected_joypads().is_empty():
+	if not connected and connected_joypads.call().is_empty():
 		_set_mode(Mode.KBM)
 
 

@@ -87,11 +87,21 @@ func test_sem_reemissao() -> void:
 
 
 func test_desconexao_volta_kbm() -> void:
-	assert_true(Input.get_connected_joypads().is_empty(), "o teste supõe nenhum controle conectado")
 	var r := _novo()
+	# A consulta de controles é injetada: o teste vale com ou sem controle plugado.
+	r[0].connected_joypads = func() -> Array: return []
 	r[0].handle_event(_botao_pad())
 	r[0]._on_joy_connection_changed(0, false)
 	assert_eq(r[0].mode, IM.Mode.KBM)
+	r[0].free()
+
+
+func test_desconexao_com_outro_controle_fica_pad() -> void:
+	var r := _novo()
+	r[0].connected_joypads = func() -> Array: return [1]
+	r[0].handle_event(_botao_pad())
+	r[0]._on_joy_connection_changed(0, false)
+	assert_eq(r[0].mode, IM.Mode.PAD, "ainda há um controle conectado")
 	r[0].free()
 
 
