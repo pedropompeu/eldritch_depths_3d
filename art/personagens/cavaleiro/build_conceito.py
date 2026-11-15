@@ -25,20 +25,22 @@ import ed_blender as ed  # noqa: E402
 import ed_modelagem as em  # noqa: E402
 import ed_conceito as ec  # noqa: E402
 from ed_conceito import (caixa, casca, engrossar, esfera, gema, grade,  # noqa: E402
-                         orientar, segmento, suave)
+                         liso, orientar, segmento, suave)
 
 TMP = os.path.join(RAIZ, ".godot", "capturas_tmp", "cavaleiro_conceito")
 
-# Paleta do conceito: os tons do hero.png, um pouco mais claros que no jogo para ler no cinza.
-COURO_CASACO = "#5e3d29"
-COURO_CAPUZ = "#4b3222"
-COURO_CINTO = "#3a2618"
-ACO = "#474a57"
-TABARDO = "#a3a5ad"
-TABARDO_RUNA = "#5f616b"
-OSSO = "#c4b79a"
-CAPA = "#221c26"
-CALCA = "#2b2321"
+# Paleta do guia de estilo (docs/arte/guia-de-estilo.md): couro, aço, aço-gume e runa; o
+# resto são variações em torno delas (osso = pedra-gasta clareada, capa = véu-fundo escurecido).
+COURO_CASACO = "#3c2a28"
+COURO_CAPUZ = "#34241f"
+COURO_CINTO = "#2a1d1b"
+ACO = "#3c3e4a"
+ACO_GUME = "#8a8c96"
+TABARDO = "#7e8089"
+TABARDO_RUNA = "#3c3e4a"
+OSSO = "#8f877a"
+CAPA = "#221a2a"
+CALCA = "#2a1f1e"
 BREU = em.BREU
 RUNA = em.RUNA
 
@@ -55,16 +57,16 @@ TORNOZELO = 0.17, 0.09
 def materiais():
     material = ec.material
     return {
-        "casaco": material("casaco", COURO_CASACO, 0.75, variacao=0.25),
+        "casaco": material("casaco", COURO_CASACO, 0.75, variacao=0.25, borda="#5a4038"),
         "capuz": material("capuz", COURO_CAPUZ, 0.8, variacao=0.25),
-        "cinto": material("cinto", COURO_CINTO, 0.7, variacao=0.2),
-        "aco": material("aco", ACO, 0.4, metalico=0.75, variacao=0.15),
-        "tabardo": ec.mat_runas("tabardo", TABARDO, TABARDO_RUNA),
-        "osso": material("osso", OSSO, 0.6, variacao=0.12),
+        "cinto": material("cinto", COURO_CINTO, 0.7, variacao=0.2, borda="#4a3530"),
+        "aco": material("aco", ACO, 0.4, metalico=0.6, variacao=0.15, borda=ACO_GUME),
+        "tabardo": ec.mat_runas("tabardo", TABARDO, TABARDO_RUNA, 0.7, 0.1),
+        "osso": material("osso", OSSO, 0.6, variacao=0.12, ao=0.8),
         "capa": material("capa", CAPA, 0.85, variacao=0.3),
         "calca": material("calca", CALCA, 0.85),
         "breu": material("breu", BREU, 1.0),
-        "runa": material("runa", RUNA, 0.3, emissao=3.0),
+        "runa": material("runa", RUNA, 0.3, emissao=0.5),
     }
 
 
@@ -118,10 +120,35 @@ def corpo(M):
         p.append(em.usar(suave(segmento(f"greva{lado}", j, t, [(0.0, -0.02), (0.064, 0.0),
                                                                (0.066, 0.3), (0.05, 0.85),
                                                                (0.056, 1.0), (0.0, 1.0)])), M["aco"]))
-        p.append(em.usar(suave(esfera(f"joelheira{lado}", 0.062, j + Vector((0, -0.025, 0)),
-                                      (1, 0.8, 1))), M["aco"]))
-        p.append(em.usar(caixa(f"bota{lado}", (t.x, -0.04, 0.05), (0.052, 0.125, 0.05), 0.022),
-                         M["aco"]))
+        # Joelheira em concha com a asa de fora, que lê de frente e de lado.
+        p.append(em.usar(suave(esfera(f"joelheira{lado}", 1.0, j + Vector((0, -0.045, 0.005)),
+                                      (0.068, 0.045, 0.075))), M["aco"]))
+        p.append(em.usar(suave(esfera(f"asa{lado}", 1.0, j + Vector((lado * 0.05, -0.02, 0.0)),
+                                      (0.02, 0.05, 0.06))), M["aco"]))
+        p.append(em.usar(suave(esfera(f"coxote{lado}", 1.0, (q + j) * 0.5 + Vector((0, -0.05, 0.06)),
+                                      (0.075, 0.04, 0.13))), M["aco"]))
+        p += sabatao(M, lado, t)
+    return p
+
+
+def sabatao(M, lado, t):
+    """Bota de placa: cano no tornozelo, peito do pé em lâminas sobrepostas e bico arredondado."""
+    p = []
+    x = t.x
+    p.append(em.usar(liso(suave(segmento(f"cano{lado}", Vector((x, 0, 0.16)), Vector((x, 0.0, 0.06)), [
+        (0.058, 0.0), (0.06, 0.6), (0.066, 1.0)]))), M["aco"]))
+    p[-1] = engrossar(p[-1], 0.006)
+    p.append(em.usar(caixa(f"sola{lado}", (x, -0.045, 0.012), (0.05, 0.12, 0.012), 0.4), M["cinto"]))
+    calcanhar = esfera(f"calcanhar{lado}", 1.0, (x, 0.02, 0.055), (0.052, 0.06, 0.05))
+    p.append(em.usar(suave(calcanhar), M["aco"]))
+    for i in range(4):
+        # Lâminas do peito do pé, cada uma um pouco mais baixa e à frente da anterior.
+        y = -0.02 - i * 0.032
+        z = 0.072 - i * 0.011
+        lam = esfera(f"lamina{lado}_{i}", 1.0, (x, y, z), (0.05 - i * 0.002, 0.03, 0.05 - i * 0.008), sub=2)
+        p.append(em.usar(suave(lam), M["aco"]))
+    p.append(em.usar(suave(esfera(f"bico{lado}", 1.0, (x, -0.148, 0.034), (0.042, 0.04, 0.032))),
+                     M["aco"]))
     return p
 
 
@@ -138,15 +165,15 @@ def bracos(M):
         p.append(em.usar(suave(esfera(f"cotoveleira{lado}", 0.052, cot)), M["aco"]))
         p.append(em.usar(suave(segmento(f"manopla{lado}", cot, pulso, [
             (0.0, 0.05), (0.046, 0.05), (0.05, 0.55), (0.06, 0.9), (0.062, 1.0), (0.0, 1.0)])), M["aco"]))
-        # Mão em luva de placa, palma virada para a coxa: largura em Y, espessura no plano do braço.
-        mao = caixa(f"mao{lado}", (0, 0, 0), (0.022, 0.042, BRACO[2] / 2 * 0.9), 0.012)
-        orientar(mao, pulso + d * (BRACO[2] / 2), d)
-        mao.scale = (0.022, 0.042, BRACO[2] / 2 * 0.9)
-        p.append(em.usar(mao, M["aco"]))
-        dedao = caixa(f"dedao{lado}", (0, 0, 0), (0.014, 0.014, 0.035), 0.008)
-        orientar(dedao, pulso + d * 0.05 + Vector((0, -0.045, 0)), d)
-        dedao.scale = (0.014, 0.014, 0.035)
-        p.append(em.usar(dedao, M["aco"]))
+        # Manopla de dedos articulados, palma virada para a coxa, dedos meio fechados.
+        n = Vector((-lado * math.cos(math.radians(45)), 0, -math.sin(math.radians(45))))
+        p += [em.usar(x, M["aco"]) for x in ec.mao(f"mao{lado}", pulso, d, n, palma=0.08,
+                                                   largura=0.085, espessura=0.032, dedo=0.08,
+                                                   raio=0.0135, curva=0.28)]
+        # Punho da manopla em sino.
+        p.append(em.usar(liso(suave(segmento(f"punho{lado}", pulso - d * 0.06, pulso + d * 0.012, [
+            (0.05, 0.0), (0.056, 0.5), (0.068, 1.0)]))), M["aco"]))
+        p[-1] = engrossar(p[-1], 0.006)
 
         # Ombreira: três placas sobrepostas descendo pelo braço.
         eixo = Vector((lado * 0.5, 0, 0.87))
@@ -155,7 +182,11 @@ def bracos(M):
                 (0.0, 0.06 * esc), (0.05 * esc, 0.055 * esc), (0.088 * esc, 0.034 * esc),
                 (0.108 * esc, 0.0), (0.114 * esc, -0.035 * esc)], 18)
             orientar(placa, s + Vector((0, 0, 0.035)) + d * desce, eixo)
-            p.append(em.usar(engrossar(suave(placa), 0.012), M["aco"]))
+            p.append(em.usar(engrossar(liso(placa), 0.012), M["aco"]))
+            # Friso rolado na beira de cada placa.
+            friso = em.anel(f"friso{lado}_{i}", 0.114 * esc, 0.006, 24, 6, (0, 0, 0))
+            orientar(friso, s + Vector((0, 0, 0.035)) + d * desce + eixo.normalized() * (-0.035 * esc), eixo)
+            p.append(em.usar(suave(friso), M["aco"]))
     return p
 
 
@@ -172,11 +203,12 @@ def cabeca(M):
     perfil = [(0.0, 1.82), (0.06, 1.815), (0.115, 1.795), (0.15, 1.765), (0.165, 1.73),
               (0.172, 1.68), (0.17, 1.62), (0.165, 1.56), (0.17, 1.51), (0.20, 1.47),
               (0.235, 1.43), (0.25, 1.385)]
-    capuz = casca("capuz", perfil, abertura, seg=36)
+    capuz = casca("capuz", perfil, abertura, seg=36, dobra=lambda th, z: 0.006 * math.sin(th * 7)
+                  * max(0.0, (1.6 - z) / 0.2))
     capuz.location = (0, -0.012, 0)
     capuz.scale = (1, 0.95, 1)
     em.usar(capuz, M["capuz"])
-    p.append(engrossar(suave(capuz), 0.016, M["breu"]))
+    p.append(engrossar(liso(capuz), 0.016, M["breu"]))
 
     # Máscara de caveira em osso.
     p.append(em.usar(suave(esfera("cranio", 1.0, (0, -0.07, 1.625), (0.078, 0.052, 0.078))), M["osso"]))
@@ -205,9 +237,14 @@ def roupa(M):
             return math.radians(14 + 16 * (1.30 - z) / 0.30)
         return math.radians(30 + 16 * (1.0 - z) / 0.68)
 
-    casaco = casca("casaco", PERFIL_CASACO, abertura, seg=44, escala_y=ESCALA_Y_CASACO)
+    def pregas(th, z):
+        # Pregas do casaco que abrem da cintura para a barra; atrás, a fenda das costas.
+        fundo = max(0.0, min(1.0, (0.98 - z) / 0.6))
+        return 0.014 * fundo * math.sin(th * 11 + 0.6) + 0.006 * fundo * math.sin(th * 23)
+
+    casaco = casca("casaco", PERFIL_CASACO, abertura, seg=72, escala_y=ESCALA_Y_CASACO, dobra=pregas)
     em.usar(casaco, M["casaco"])
-    p.append(engrossar(suave(casaco), 0.014))
+    p.append(engrossar(liso(casaco), 0.014))
     # Cravos violeta na barra.
     z = PERFIL_CASACO[-1][1] + 0.025
     a0 = abertura(z)
@@ -254,9 +291,9 @@ def roupa(M):
         y = ESCALA_Y_CASACO * r_casaco(z) + 0.048 - 0.7 * x * x + 0.022 * math.sin(x * 24) * (0.4 + v)
         return (x, y, z)
 
-    capa = grade("capa", 26, 20, ponto_capa)
+    capa = grade("capa", 40, 26, ponto_capa)
     em.usar(capa, M["capa"])
-    p.append(engrossar(suave(capa), 0.01))
+    p.append(engrossar(liso(capa), 0.01))
     return p
 
 

@@ -33,9 +33,10 @@ def segmento(nome, a, b, perfil, seg=14):
     return orientar(obj, a, b - a)
 
 
-def casca(nome, perfil, abertura, seg=40, escala_y=1.0):
+def casca(nome, perfil, abertura, seg=40, escala_y=1.0, dobra=None):
     """Superfície de revolução em torno de Z aberta na frente (−Y). `perfil` = [(raio, z)];
-    `abertura(z)` = meio ângulo da abertura em rad. Fica sem espessura (usar `engrossar`)."""
+    `abertura(z)` = meio ângulo da abertura em rad; `dobra(th, z)` soma ao raio (pregas do
+    pano). Fica sem espessura (usar `engrossar`)."""
     bm = bmesh.new()
     aneis = []
     for r, z in perfil:
@@ -43,7 +44,8 @@ def casca(nome, perfil, abertura, seg=40, escala_y=1.0):
         anel = []
         for k in range(seg):
             th = a0 + (2 * math.pi - 2 * a0) * k / (seg - 1)
-            anel.append(bm.verts.new((r * math.sin(th), -r * math.cos(th) * escala_y, z)))
+            rr = r + (dobra(th, z) if dobra else 0.0)
+            anel.append(bm.verts.new((rr * math.sin(th), -rr * math.cos(th) * escala_y, z)))
         aneis.append(anel)
     for a, b in zip(aneis, aneis[1:]):
         for k in range(seg - 1):
@@ -121,21 +123,147 @@ def suave(obj):
     return obj
 
 
+def liso(obj, nivel=1):
+    """Subdivisão (Catmull-Clark) para o pano e as placas curvas não mostrarem as facetas."""
+    mod = obj.modifiers.new("liso", "SUBSURF")
+    mod.levels = mod.render_levels = nivel
+    return suave(obj)
+
+
+def mao(nome, pulso, d, n, palma=0.085, largura=0.08, espessura=0.028, dedo=0.08, raio=0.0105,
+        curva=0.35, ponta=0.85):
+    """Mão com palma, quatro dedos de duas falanges e polegar. `d` = direção do braço (para os
+    dedos), `n` = lado da palma (os dedos dobram para ele). Devolve a lista de peças."""
+    d, n = Vector(d).normalized(), Vector(n).normalized()
+    w = d.cross(n).normalized()
+    frente = -1.0 if w.y > 0 else 1.0           # polegar para a frente (−Y)
+    pulso = Vector(pulso)
+    pecas = []
+    pal = caixa(f"{nome}_palma", (0, 0, 0), (1, 1, 1), 0.35)
+    orientar(pal, pulso + d * (palma / 2), d)
+    pal.scale = (espessura / 2, largura / 2, palma / 2)
+    pecas.append(pal)
+
+    def falange(rotulo, a, b, r0, r1):
+        pecas.append(suave(segmento(rotulo, a, b, [(0.0, -0.1), (r0 * 0.9, 0.0), (r0, 0.25),
+                                                    (r1, 0.85), (r1 * 0.6, 1.05), (0.0, 1.12)], 10)))
+
+    for i, fator in enumerate((0.9, 1.0, 0.95, 0.78)):
+        off = (i - 1.5) / 1.5 * largura * 0.36
+        k = pulso + d * palma + w * off
+        l = dedo * fator
+        d1 = (d * math.cos(curva) + n * math.sin(curva)).normalized()
+        d2 = (d * math.cos(2.2 * curva) + n * math.sin(2.2 * curva)).normalized()
+        m = k + d1 * l * 0.55
+        falange(f"{nome}_dedo{i}a", k - d * 0.008, m, raio, raio * 0.95)
+        falange(f"{nome}_dedo{i}b", m, m + d2 * l * 0.45, raio * 0.92, raio * ponta)
+    base = pulso + d * palma * 0.3 + w * frente * largura * 0.42 + n * espessura * 0.25
+    t1 = (d * 0.55 + n * 0.45 + w * frente * 0.35).normalized()
+    t2 = (d * 0.8 + n * 0.55).normalized()
+    meio = base + t1 * dedo * 0.5
+    falange(f"{nome}_polegar_a", base, meio, raio * 1.15, raio * 1.05)
+    falange(f"{nome}_polegar_b", meio, meio + t2 * dedo * 0.38, raio * 1.0, raio * ponta)
+    return pecas
+
+
 # ---------------------------------------------------------------- materiais
 
-def material(nome, cor, rugosidade=0.7, metalico=0.0, variacao=0.0, emissao=0.0):
+def acabamento(nt, cor, ao=0.6, borda=None, forca_borda=1.0):
+    """Leva `cor` (socket ou RGBA) ao jeito do guia de estilo: pinceladas largas (variação de
+    valor em manchas grandes), sombra de oclusão pintada nas reentrâncias e borda que pega luz
+    nas quinas (`borda` = cor da quina, ex. aço-gume). Devolve o socket da cor final."""
+    N = nt.nodes
+    coord = N.new("ShaderNodeTexCoord")
+    pincel = N.new("ShaderNodeTexNoise")
+    pincel.inputs["Scale"].default_value = 7.0
+    pincel.inputs["Detail"].default_value = 1.5
+    pincel.inputs["Distortion"].default_value = 0.8
+    nt.links.new(coord.outputs["Object"], pincel.inputs["Vector"])
+    faixa = N.new("ShaderNodeMapRange")
+    faixa.inputs["From Min"].default_value = 0.3
+    faixa.inputs["From Max"].default_value = 0.7
+    faixa.inputs["To Min"].default_value = 0.88
+    faixa.inputs["To Max"].default_value = 1.1
+    nt.links.new(pincel.outputs["Fac"], faixa.inputs["Value"])
+    mult = N.new("ShaderNodeMix")
+    mult.data_type = "RGBA"
+    mult.blend_type = "MULTIPLY"
+    mult.inputs["Factor"].default_value = 1.0
+    if isinstance(cor, bpy.types.NodeSocket):
+        nt.links.new(cor, mult.inputs[6])
+    else:
+        mult.inputs[6].default_value = cor
+    cinza = N.new("ShaderNodeCombineColor")
+    for k in range(3):
+        nt.links.new(faixa.outputs["Result"], cinza.inputs[k])
+    nt.links.new(cinza.outputs["Color"], mult.inputs[7])
+    saida = mult.outputs[2]
+
+    if ao:
+        oclusao = N.new("ShaderNodeAmbientOcclusion")
+        oclusao.inputs["Distance"].default_value = 0.12
+        oclusao.samples = 8
+        inv = N.new("ShaderNodeMath")
+        inv.operation = "MULTIPLY_ADD"
+        inv.inputs[1].default_value = -ao
+        inv.inputs[2].default_value = ao
+        nt.links.new(oclusao.outputs["AO"], inv.inputs[0])          # ao·(1 − AO)
+        sombra = N.new("ShaderNodeMix")
+        sombra.data_type = "RGBA"
+        sombra.blend_type = "MULTIPLY"
+        nt.links.new(inv.outputs[0], sombra.inputs["Factor"])
+        nt.links.new(saida, sombra.inputs[6])
+        sombra.inputs[7].default_value = (0.16, 0.12, 0.2, 1.0)     # sombra fria, puxada ao véu
+        saida = sombra.outputs[2]
+
+    if borda is not None:
+        chanfro = N.new("ShaderNodeBevel")
+        chanfro.samples = 8
+        chanfro.inputs["Radius"].default_value = 0.008
+        geo = N.new("ShaderNodeNewGeometry")
+        dot = N.new("ShaderNodeVectorMath")
+        dot.operation = "DOT_PRODUCT"
+        nt.links.new(chanfro.outputs["Normal"], dot.inputs[0])
+        nt.links.new(geo.outputs["Normal"], dot.inputs[1])
+        quina = N.new("ShaderNodeMapRange")
+        quina.inputs["From Min"].default_value = 0.995
+        quina.inputs["From Max"].default_value = 0.93
+        quina.inputs["To Max"].default_value = forca_borda
+        nt.links.new(dot.outputs["Value"], quina.inputs["Value"])
+        # Superfícies lisas não têm quina: o contorno da forma (onde ela vira para longe do
+        # olho) também pega a cor da borda, como o brilho pintado numa placa curva.
+        perfil = N.new("ShaderNodeLayerWeight")
+        perfil.inputs["Blend"].default_value = 0.35
+        contorno = N.new("ShaderNodeMapRange")
+        contorno.inputs["From Min"].default_value = 0.55
+        contorno.inputs["From Max"].default_value = 0.95
+        contorno.inputs["To Max"].default_value = 0.7 * forca_borda
+        nt.links.new(perfil.outputs["Facing"], contorno.inputs["Value"])
+        juntos = N.new("ShaderNodeMath")
+        juntos.operation = "MAXIMUM"
+        nt.links.new(quina.outputs["Result"], juntos.inputs[0])
+        nt.links.new(contorno.outputs["Result"], juntos.inputs[1])
+        saida = em.mistura(nt, juntos.outputs[0], saida, em.rgba(borda))
+    return saida
+
+
+def material(nome, cor, rugosidade=0.7, metalico=0.0, variacao=0.0, emissao=0.0, ao=0.6,
+             borda=None):
     m, nt, bsdf = em.mat(nome)
     bsdf.inputs["Roughness"].default_value = rugosidade
     bsdf.inputs["Metallic"].default_value = metalico
     if variacao:
         r = em.ruido(nt, 22.0, 4.0)
         escuro = tuple(c * (1 - variacao) for c in em.rgba(cor)[:3]) + (1.0,)
-        nt.links.new(em.mistura(nt, r.outputs["Fac"], escuro, em.rgba(cor)), bsdf.inputs["Base Color"])
+        base = em.mistura(nt, r.outputs["Fac"], escuro, em.rgba(cor))
     else:
-        bsdf.inputs["Base Color"].default_value = em.rgba(cor)
+        base = em.rgba(cor)
     if emissao:
+        bsdf.inputs["Base Color"].default_value = em.rgba(cor)
         bsdf.inputs["Emission Color"].default_value = em.rgba(cor)
         bsdf.inputs["Emission Strength"].default_value = emissao
+    else:
+        nt.links.new(acabamento(nt, base, ao, borda), bsdf.inputs["Base Color"])
     return m
 
 
@@ -183,9 +311,11 @@ def imagem_runas(largura=128, altura=1024, linhas=11, semente=7):
     return img
 
 
-def mat_runas(nome, base, cor_runa, rugosidade=0.55, metalico=0.3, brilho=0.0):
-    """Pano ou placa pela UV da grade (u na largura, v na altura): barra escura nas bordas, uma
-    coluna central de runas gravadas (`imagem_runas`), faixas finas na horizontal e o resto liso."""
+def mat_runas(nome, base, cor_runa, rugosidade=0.55, metalico=0.3, brilho=0.0, cor_barra=None):
+    """Pano ou placa pela UV da grade (u na largura, v na altura): barra nas bordas, uma coluna
+    central de runas gravadas (`imagem_runas`), faixas finas na horizontal e o resto liso. Com
+    `cor_barra`, barra e faixas usam essa cor e só as runas levam `cor_runa` e brilho (guia: runa
+    em no máximo 5% da área)."""
     m, nt, bsdf = em.mat(nome)
     bsdf.inputs["Roughness"].default_value = rugosidade
     bsdf.inputs["Metallic"].default_value = metalico
@@ -221,9 +351,15 @@ def mat_runas(nome, base, cor_runa, rugosidade=0.55, metalico=0.3, brilho=0.0):
     tex.interpolation = "Cubic"
     nt.links.new(mapa.outputs[0], tex.inputs["Vector"])
     runa = tex.outputs["Alpha"]
-    fac = op("MAXIMUM", op("MAXIMUM", borda, faixa), runa)
-    cor = em.mistura(nt, fac, em.rgba(base), em.rgba(cor_runa))
-    nt.links.new(cor, bsdf.inputs["Base Color"])
+    ornato = op("MAXIMUM", borda, faixa)
+    if cor_barra:
+        fac = runa
+        cor = em.mistura(nt, fac, em.mistura(nt, ornato, em.rgba(base), em.rgba(cor_barra)),
+                         em.rgba(cor_runa))
+    else:
+        fac = op("MAXIMUM", ornato, runa)
+        cor = em.mistura(nt, fac, em.rgba(base), em.rgba(cor_runa))
+    nt.links.new(acabamento(nt, cor, 0.5), bsdf.inputs["Base Color"])
     if brilho:
         nt.links.new(cor, bsdf.inputs["Emission Color"])
         forca = N.new("ShaderNodeMath")
@@ -236,52 +372,47 @@ def mat_runas(nome, base, cor_runa, rugosidade=0.55, metalico=0.3, brilho=0.0):
 
 # ---------------------------------------------------------------- render
 
-def render(pasta, alvo_z=0.92, tamanho=1024, escala_orto=2.0):
-    """Frente, lado (de perfil, olhando para a direita da imagem), costas e 3/4, com fundo
-    transparente, luz uniforme e contorno (Freestyle)."""
+LUZ_HEROI = "#ffb36b"
+
+
+def render(pasta, alvo_z=0.92, tamanho=1024, escala_orto=2.0, amostras=96):
+    """Folha: frente, lado (de perfil, olhando para a direita da imagem), costas e 3/4, com
+    fundo transparente e luz neutra, sem contorno (o guia de estilo não usa). Depois a prova
+    de luz do jogo: fundo em breu e só uma luz quente por cima, como a HeroLight, mais um fio
+    violeta por trás (`jogo_frente`, `jogo_tres_quartos`)."""
     cena = bpy.context.scene
-    ed._cycles_cpu(64)
+    ed._cycles_cpu(amostras)
+    cena.cycles.use_denoising = True
     cena.render.resolution_x = cena.render.resolution_y = tamanho
-    cena.render.film_transparent = True
     cena.render.image_settings.file_format = "PNG"
     cena.render.image_settings.color_mode = "RGBA"
     cena.view_settings.view_transform = "Standard"
-    cena.render.use_freestyle = True
-    cena.render.line_thickness_mode = "ABSOLUTE"
-    cena.render.line_thickness = 1.3
-    fs = cena.view_layers[0].freestyle_settings
-    ls = fs.linesets[0] if fs.linesets else fs.linesets.new("contorno")
-    if ls.linestyle is None:
-        ls.linestyle = bpy.data.linestyles.new("contorno")
-    ls.linestyle.color = (0.04, 0.035, 0.05)
+    cena.render.use_freestyle = False
 
     mundo = bpy.data.worlds.new("conceito")
     mundo.use_nodes = True
     fundo = mundo.node_tree.nodes["Background"]
-    fundo.inputs["Color"].default_value = (0.55, 0.55, 0.57, 1)
-    fundo.inputs["Strength"].default_value = 1.0
     cena.world = mundo
     sol = bpy.data.objects.new("sol", bpy.data.lights.new("sol", "SUN"))
-    sol.data.energy = 2.2
     sol.data.angle = math.radians(25)
     cena.collection.objects.link(sol)
+    heroi = bpy.data.objects.new("luz_heroi", bpy.data.lights.new("luz_heroi", "POINT"))
+    heroi.data.color = em.rgba(LUZ_HEROI)[:3]
+    heroi.data.shadow_soft_size = 0.25
+    cena.collection.objects.link(heroi)
+    contra = bpy.data.objects.new("contraluz", bpy.data.lights.new("contraluz", "AREA"))
+    contra.data.color = em.rgba(em.RUNA)[:3]
+    contra.data.size = 1.5
+    cena.collection.objects.link(contra)
 
     cam = bpy.data.objects.new("cam", bpy.data.cameras.new("cam"))
     cena.collection.objects.link(cam)
     cena.camera = cam
     alvo = Vector((0, 0, alvo_z))
     os.makedirs(pasta, exist_ok=True)
-    vistas = [
-        ("frente", Vector((0, -1, 0)), True),
-        ("lado", Vector((-1, 0, 0)), True),   # câmera à direita do personagem: ele olha para a direita
-        ("costas", Vector((0, 1, 0)), True),
-        ("tres_quartos", Vector((-0.55, -0.83, 0.18)), False),
-    ]
-    for nome, direcao, orto in vistas:
+
+    def mirar(direcao, orto):
         d = direcao.normalized()
-        # Sol sempre vindo de cima, um pouco à esquerda e de frente para a câmera.
-        luz = (d + Vector((0, 0, 1.2)) + d.cross(Vector((0, 0, 1))) * 0.5).normalized()
-        sol.rotation_euler = (-luz).to_track_quat("-Z", "Y").to_euler()
         if orto:
             cam.data.type = "ORTHO"
             cam.data.ortho_scale = escala_orto
@@ -289,7 +420,44 @@ def render(pasta, alvo_z=0.92, tamanho=1024, escala_orto=2.0):
         else:
             cam.data.type = "PERSP"
             cam.data.lens = 50
-            cam.location = alvo + d * 4.6
+            cam.location = alvo + d * 3.3
         cam.rotation_euler = (alvo - cam.location).to_track_quat("-Z", "Y").to_euler()
+        return d
+
+    def foto(nome):
         cena.render.filepath = os.path.join(pasta, nome + ".png")
         bpy.ops.render.render(write_still=True)
+
+    # Folha: luz neutra.
+    cena.render.film_transparent = True
+    fundo.inputs["Color"].default_value = (0.55, 0.55, 0.57, 1)
+    fundo.inputs["Strength"].default_value = 0.8
+    sol.data.energy = 2.6
+    heroi.data.energy = contra.data.energy = 0.0
+    vistas = [
+        ("frente", Vector((0, -1, 0)), True),
+        ("lado", Vector((-1, 0, 0)), True),   # câmera à direita do personagem: ele olha para a direita
+        ("costas", Vector((0, 1, 0)), True),
+        ("tres_quartos", Vector((-0.55, -0.83, 0.18)), False),
+    ]
+    for nome, direcao, orto in vistas:
+        d = mirar(direcao, orto)
+        # Sol sempre vindo de cima, um pouco à esquerda e de frente para a câmera.
+        luz = (d + Vector((0, 0, 1.2)) + d.cross(Vector((0, 0, 1))) * 0.5).normalized()
+        sol.rotation_euler = (-luz).to_track_quat("-Z", "Y").to_euler()
+        foto(nome)
+
+    # Prova de luz do jogo: breu, luz quente do herói por cima e na frente, fio violeta atrás.
+    cena.render.film_transparent = False
+    fundo.inputs["Color"].default_value = em.rgba(em.BREU)
+    fundo.inputs["Strength"].default_value = 1.0
+    sol.data.energy = 0.0
+    heroi.data.energy = 260.0
+    heroi.location = (0.35, -1.1, 2.4)
+    contra.data.energy = 60.0
+    contra.location = (0.0, 1.4, 2.0)
+    contra.rotation_euler = (Vector((0, 0, alvo_z)) - contra.location).to_track_quat("-Z", "Y").to_euler()
+    for nome, direcao, orto in (("jogo_frente", Vector((0, -1, 0)), True),
+                                ("jogo_tres_quartos", Vector((-0.55, -0.83, 0.18)), False)):
+        mirar(direcao, orto)
+        foto(nome)

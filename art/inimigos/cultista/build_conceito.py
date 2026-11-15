@@ -31,17 +31,19 @@ from ed_conceito import (caixa, casca, engrossar, esfera, gema, grade,  # noqa: 
 
 TMP = os.path.join(RAIZ, ".godot", "capturas_tmp", "cultista_conceito")
 
-CARMIM = "#8c1c2a"
-VINHO = "#5e1726"
-FERRUGEM = "#b45a2c"
-SOBREMANTO = "#3b2a63"
-SOBREMANTO_RUNA = "#7f6cff"
-VESTE = "#2c2236"
-COURO = "#3d2618"
-MAO = "#3a3046"
-TENTACULO = "#2f1d42"
-VENTOSA = "#c47aa8"
-OLHO = "#d26bff"
+# Paleta do guia de estilo: manto-carmim, manto-vinho, véu-fundo e runa; a borda ferrugem e as
+# ventosas são variações do carmim (mais quente; mais clara e fria), fiéis ao cultist.png.
+CARMIM = "#6c1f34"
+VINHO = "#3a0f1e"
+FERRUGEM = "#74301f"
+SOBREMANTO = "#29193a"
+SOBREMANTO_RUNA = em.RUNA
+VESTE = "#1e1622"
+COURO = "#2a1d1b"
+MAO = "#241c2a"
+TENTACULO = "#2a1838"
+VENTOSA = "#8a5a72"
+OLHO = em.RUNA
 BREU = em.BREU
 RUNA = em.RUNA
 
@@ -95,15 +97,16 @@ def materiais():
         "manto": mat_borda("manto", VINHO, FERRUGEM, fundo=0.12),
         "manga": material("manga", CARMIM, 0.85, variacao=0.25),
         "punho": material("punho", FERRUGEM, 0.8),
-        "sobremanto": ec.mat_runas("sobremanto", SOBREMANTO, SOBREMANTO_RUNA, 0.8, 0.0, brilho=0.7),
+        "sobremanto": ec.mat_runas("sobremanto", SOBREMANTO, SOBREMANTO_RUNA, 0.8, 0.0, brilho=0.5,
+                                    cor_barra="#1a1024"),
         "veste": material("veste", VESTE, 0.85, variacao=0.2),
         "couro": material("couro", COURO, 0.7, variacao=0.2),
         "mao": material("mao", MAO, 0.7),
-        "tentaculo": material("tentaculo", TENTACULO, 0.45, variacao=0.3),
+        "tentaculo": material("tentaculo", TENTACULO, 0.45, variacao=0.3, borda="#4a3060"),
         "ventosa": material("ventosa", VENTOSA, 0.5),
         "breu": material("breu", BREU, 1.0),
-        "olho": material("olho", OLHO, 0.3, emissao=8.0),
-        "runa": material("runa", RUNA, 0.3, emissao=3.0),
+        "olho": material("olho", OLHO, 0.3, emissao=6.0),
+        "runa": material("runa", RUNA, 0.3, emissao=0.5),
         "metal": material("metal", "#4a4652", 0.4, metalico=0.7),
     }
 
@@ -120,7 +123,7 @@ def interpola(pts, z):
     return pts[-1][1]
 
 
-def manto(nome, raio, z_topo, fundo, abertura, nx=48, nz=22, escala_y=ESCALA_Y):
+def manto(nome, raio, z_topo, fundo, abertura, nx=48, nz=22, escala_y=ESCALA_Y, dobra=None):
     """Pano em volta do corpo, aberto na frente, com a barra em `fundo(θ)`.
     `raio(z)`, `abertura(z)` em rad. UV: u em volta (0 e 1 nas beiradas da frente), v de 0
     (barra) a 1 (topo)."""
@@ -132,7 +135,7 @@ def manto(nome, raio, z_topo, fundo, abertura, nx=48, nz=22, escala_y=ESCALA_Y):
         z = z_topo - v * (z_topo - zb)
         a0 = abertura(z)
         th = a0 + (2 * math.pi - 2 * a0) * u
-        r = raio(z)
+        r = raio(z) + (dobra(th, z) if dobra else 0.0)
         return (r * math.sin(th), -r * math.cos(th) * escala_y, z)
     return grade(nome, nx, nz, ponto)
 
@@ -237,13 +240,14 @@ def corpo(M):
                          M["mao"]))
         manga = segmento(f"manga{lado}", s + d * 0.04, pulso - d * 0.03, [
             (0.07, 0.0), (0.075, 0.4), (0.1, 0.8), (0.12, 1.0)])
-        p.append(em.usar(engrossar(suave(manga), 0.008), M["manga"]))
+        p.append(em.usar(engrossar(ec.liso(manga), 0.008), M["manga"]))
         p.append(em.usar(suave(segmento(f"punho{lado}", pulso - d * 0.05, pulso - d * 0.03, [
             (0.118, 0.0), (0.124, 0.5), (0.122, 1.0)])), M["punho"]))
-        mao = caixa(f"mao{lado}", (0, 0, 0), (0.02, 0.04, 0.075), 0.012)
-        ec.orientar(mao, pulso + d * 0.08, d)
-        mao.scale = (0.02, 0.04, 0.075)
-        p.append(em.usar(mao, M["mao"]))
+        # Mão magra de dedos longos em garra, palma para a coxa.
+        n = Vector((-lado * math.cos(math.radians(45)), 0, -math.sin(math.radians(45))))
+        p += [em.usar(x, M["mao"]) for x in ec.mao(f"mao{lado}", pulso - d * 0.02, d, n, palma=0.065,
+                                                   largura=0.06, espessura=0.022, dedo=0.09,
+                                                   raio=0.0075, curva=0.42, ponta=0.3)]
     return p
 
 
@@ -266,14 +270,14 @@ def roupa(M):
             v.co.y += (v.co.z - 1.70) ** 1.6 * 3.2
     capuz.location = (0, -0.012, 0)
     em.usar(capuz, M["capuz"])
-    p.append(engrossar(suave(capuz), 0.016, M["breu"]))
+    p.append(engrossar(ec.liso(capuz), 0.016, M["breu"]))
 
     # Capinha nos ombros, de pontas, aberta na frente.
     capinha = manto("capinha", lambda z: interpola([(1.24, 0.30), (1.36, 0.25), (1.46, 0.18)], z),
                     1.46, lambda th: 1.22 + 0.06 * abs(math.sin(th * 4.5)),
                     lambda z: math.radians(16), nx=40, nz=8)
     em.usar(capinha, M["capinha"])
-    p.append(engrossar(suave(capinha), 0.012))
+    p.append(engrossar(ec.liso(capinha), 0.012))
 
     # Manto vinho em sino, aberto na frente, barra em pontas de comprimentos diferentes.
     def r_manto(z):
@@ -286,9 +290,13 @@ def roupa(M):
     def barra(th):
         return 0.10 + 0.17 * abs(math.sin(th * 3.5 + 0.4)) ** 2 + 0.06 * abs(math.sin(th * 9.0))
 
-    m = manto("manto", r_manto, 1.40, barra, abertura_manto, nx=56, nz=26)
+    def pregas(th, z):
+        fundo = max(0.0, min(1.0, (1.05 - z) / 0.7))
+        return fundo * (0.02 * math.sin(th * 9 + 0.3) + 0.007 * math.sin(th * 21))
+
+    m = manto("manto", r_manto, 1.40, barra, abertura_manto, nx=96, nz=30, dobra=pregas)
     em.usar(m, M["manto"])
-    p.append(engrossar(suave(m), 0.014))
+    p.append(engrossar(ec.liso(m), 0.014))
 
     # Sobremanto rúnico na frente, visível pela abertura do manto.
     def ponto_sobre(u, v):
