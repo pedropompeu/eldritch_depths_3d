@@ -43,7 +43,7 @@ Plano: `docs/superpowers/plans/2026-11-14-tela-e-sensacao-trilha-jogo.md`
 | T29 | HUD mínimo | médio | T25, T28 | feita | claude-opus-5-5 | 2026-11-14 | 69c164b | 121 testes; captura 1080p em tela cheia conferida |
 | T30 | Modo automático e fps | médio | T29 | feita | claude-opus-5-5 | 2026-11-14 | 1a5f871 | autoplay + measure_fps.sh; mobile média 60,0 mínimo 59 (vsync); suíte 125 OK |
 | T31 | Renderizador e captura | simples | T30 | feita | claude-opus-5-5 | 2026-11-14 | eba6798 | `mobile` fixado: com vsync 60/60 nos dois; sem vsync mobile 403,7/364 × gl 387,2/341; captura quadro 70; suíte 125 OK |
-| T32 | Pedro joga e escolhe a câmera | humano | T31 | livre | | | | |
+| T32 | Pedro joga e escolhe a câmera | humano | T31 | livre | | | | [2026-11-15] (a) respondida: Pedro disse "o enquadramento eu não sei, pode escolher o que for melhor"; o Claude escolheu "atual", que já é o padrão (`camera_rig_3d.gd`, `test_preset_inicial` sem mudança). Faltam (b) e (c), que dependem de Pedro jogar. |
 | T33 | README com como rodar | simples | T31 | feita | claude-opus-5-5 | 2026-11-15 | 2464a2d | 9 seções; tabela conferida tecla a tecla contra o `[input]`; `godot --path . --quit-after 120` (com e sem `--sanity=20`) sem erro; suíte 129 OK; lint OK |
 | T34 | História do jogo no README | médio + Pedro | T33 | feita | claude-opus-5-5 | 2026-11-15 | dfb583b | rascunho 2 aprovado por Pedro ("perfeito"); seis parágrafos em português arcaico; história e nomes como (d) em produto.md; lint OK |
 
