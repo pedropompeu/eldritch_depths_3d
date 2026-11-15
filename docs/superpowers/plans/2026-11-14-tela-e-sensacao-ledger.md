@@ -44,6 +44,8 @@ Plano: `docs/superpowers/plans/2026-11-14-tela-e-sensacao-trilha-jogo.md`
 | T30 | Modo automático e fps | médio | T29 | feita | claude-opus-5-5 | 2026-11-14 | 1a5f871 | autoplay + measure_fps.sh; mobile média 60,0 mínimo 59 (vsync); suíte 125 OK |
 | T31 | Renderizador e captura | simples | T30 | feita | claude-opus-5-5 | 2026-11-14 | eba6798 | `mobile` fixado: com vsync 60/60 nos dois; sem vsync mobile 403,7/364 × gl 387,2/341; captura quadro 70; suíte 125 OK |
 | T32 | Pedro joga e escolhe a câmera | humano | T31 | livre | | | | |
+| T33 | README com como rodar | simples | T31 | livre | | | | |
+| T34 | História do jogo no README | médio + Pedro | T33 | livre | | | | |
 
 ## Decisões de execução (rulings)
 Formato: `- [data] T<nn> · modelo · <o que foi decidido> — <por quê> — <custo se estiver errado>`
@@ -112,3 +114,4 @@ Formato: `- [data] T<nn> · modelo · <o que foi decidido> — <por quê> — <c
 - [2026-11-14] T31 · claude-opus-5-5 · Os dois renderizadores empatam presos ao vsync (60,0/60), então o desempate foi uma medição extra sem vsync em tela cheia 1920×1080 (`--fullscreen --disable-vsync --quit-after 30000`, mesmos 5 s descartados): `mobile` 403,7/364 contra `gl_compatibility` 387,2/341 — `mobile` fica; o `project.godot` já estava em `mobile`, então não mudou — custo se errado: trocar uma linha do `project.godot`.
 - [2026-11-14] T31 · claude-opus-5-5 · Captura com `--fullscreen --write-movie --fixed-fps 30 -- --autoplay`, guardada no quadro 70 (`docs/capturas/2026-11-14-greybox.png`): sala quase toda no escuro, poça âmbar em volta do herói, inimigo vermelho no aviso logo acima dele, parede do Véu como placa violeta apagada ao fundo, HUD legível no canto. Quadros temporários ficam em `.godot/capturas_tmp/` (ignorada pelo git) — custo se errado: trocar o PNG.
 - [2026-11-14] T31 · claude-opus-5-5 · `docs/capturas/.gdignore` para o Godot não importar as capturas como textura do jogo (o `.import` gerado foi apagado) — custo se errado: apagar um arquivo vazio.
+- [2026-11-14] T33/T34 · claude-opus-5-5 · Pedro pediu tarefas para o README (como rodar e história do jogo); viraram T33 (README, simples) e T34 (história, aprovada por Pedro como `(d)`, porque a spec só tem a premissa e não uma história escrita); as queixas do teste da T32 passam a numerar de T35 em diante — custo se errado: renumerar duas linhas.

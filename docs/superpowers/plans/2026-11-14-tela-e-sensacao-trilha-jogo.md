@@ -104,12 +104,14 @@ Agentes externos (OpenCode, Gemini) só com modelos ou cotas gratuitas.
 | 4. Mundo | T25–T27 | Sala cinza com luz e névoa, parede do Véu, vinheta de sanidade |
 | 5. HUD | T28–T29 | Barras finas e botões por dispositivo |
 | 6. Medição e teste | T30–T32 | fps medido, renderizador escolhido, Pedro joga e escolhe a câmera |
+| 7. Documentação | T33–T34 | README com como rodar, controles e a história do jogo |
 
 Tarefas que podem correr em paralelo, depois das dependências delas:
 - T05, T06, T08, T09 e T11;
 - T12 e T14;
 - T15 e T16;
 - T28 e qualquer tarefa da fase 3.
+- T33 e T32 (o README não depende do teste de Pedro).
 
 ## Estrutura de arquivos
 
@@ -1229,7 +1231,67 @@ Se nenhuma combinação chegar a 60 fps, registrar o melhor resultado em `contex
 
 **Pronto quando:** Pedro aprova o controle, a escolha está registrada como (d), e os testes e o lint passam.
 
-As queixas viram tarefas novas no ledger (T33 em diante) antes de seguir.
+As queixas viram tarefas novas no ledger (T35 em diante, porque T33 e T34 são o README) antes de seguir.
+
+---
+
+### T33: Criar o README com como rodar
+**Nível:** simples · **Depende de:** T31
+
+**Files:** Create `README.md` (raiz do projeto) · Modify `context/arquitetura.md`
+
+O README é a porta de entrada para quem abre o repositório no GitHub (portfólio) e para os modelos que pegam uma tarefa sem conversa anterior. Escrito em português do Brasil, curto, sem prometer o que ainda não existe.
+
+- [ ] **Passo 1:** Levantar os fatos antes de escrever, sem inventar nenhum:
+  - versão do Godot e renderizador: `context/arquitetura.md` e `project.godot`;
+  - teclas e botões de cada ação: seção `[input]` do `project.godot` (tecla física e botão do controle) e `scripts/ui/input_prompt.gd`;
+  - teclas de depuração e argumentos: F7 (enquadramento), F9 (`debug_sanity_drop`, só na build de depuração), `-- --sanity=N` (só na build de depuração, só para baixo) e `-- --autoplay` em `scripts/main.gd`;
+  - estado do projeto: ledger deste plano (o que está feito) e spec §7 (o que é o Bloco 1A).
+- [ ] **Passo 2:** Escrever `README.md` com estas seções, nesta ordem:
+  1. **Título e uma frase** do que é o jogo: RPG de ação em 3D, câmera fixa inclinada, horror cósmico, sanidade como percepção da realidade (o Véu).
+  2. **Estado atual:** protótipo do Bloco 1A, com sala em blocos cinzas e herói e inimigo provisórios; a arte vem no Bloco 1B. Pôr a captura `docs/capturas/2026-11-14-greybox.png`.
+  3. **A história:** só um marcador `<!-- história: T34 -->`, preenchido pela T34.
+  4. **Requisitos:** Godot 4.7.2 e placa de vídeo com Vulkan (renderizador Mobile).
+  5. **Como rodar:** `godot --path .` a partir da raiz, ou abrir o `project.godot` no editor e apertar F5. Incluir a linha para começar com a sanidade baixa (`godot --path . -- --sanity=20`).
+  6. **Controles:** tabela com ação, teclado e mouse, e controle. Os valores vêm do Passo 1, nunca de memória.
+  7. **Teclas e argumentos de depuração:** F7, F9, `--sanity=N` e `--autoplay`, dizendo quais valem só na build de depuração.
+  8. **Testes e desempenho:** `tools/test.sh` (o que imprime quando passa) e `tools/measure_fps.sh <mobile|gl_compatibility>` (formato da saída e a observação de que o vsync limita a 60).
+  9. **Estrutura e documentação:** um parágrafo apontando para `context/index.md`, `context/arquitetura.md`, a spec e o plano/ledger em `docs/superpowers/`.
+  - Sem seção de licença, de contribuição ou de loja: são decisões de Pedro.
+- [ ] **Passo 3:** Conferir o README contra o projeto:
+  - cada comando da seção "Como rodar" e "Testes" roda copiado do README (`godot --path . --quit-after 120`, `tools/test.sh`);
+  - cada tecla da tabela bate com o `project.godot` (conferir linha por linha);
+  - a imagem aparece no preview do Markdown (caminho relativo certo).
+- [ ] **Passo 4:** Acrescentar `README.md` à estrutura de pastas em `context/arquitetura.md`. Rodar `tools/test.sh` e `python lint.py`.
+- [ ] **Passo 5:** Commit `docs: add readme with how to run and controls`.
+
+**Pronto quando:** o README tem as nove seções, os comandos rodam como estão escritos, a tabela de controles bate com o `project.godot`, e os testes e o lint passam.
+
+---
+
+### T34: Escrever a história do jogo no README (Pedro aprova)
+**Nível:** médio, com aprovação de Pedro · **Depende de:** T33
+
+**Files:** Modify `README.md`, `context/produto.md`, `context/decisoes.md`
+
+A história é regra de produto: o texto final precisa da aprovação de Pedro e só entra como `(d)`. O modelo rascunha, Pedro decide.
+
+- [ ] **Passo 1:** Juntar as fontes, sem inventar nada:
+  - spec §4.4 (classes: Cavaleiro, Mago, Demônio; o Cavaleiro encapuzado de armadura escura e espada longa), §4.5 (o Poço sem fundo: descida a partir do santuário, andares sorteados, chefe a cada 5 andares, chefe final impossível) e §4.6 (a premissa do Véu, o que ele revela, a Possessão com o Senhor de lacaios);
+  - no projeto 2D (`/home/usuario/Dev/holding_agy/eldritch_depths_20260912/`): textos de `localization/`, diálogos e nomes já usados (por exemplo, o Guardião dos Mil Olhos e o ciclo astral). Copiar o que for útil como material bruto em `fontes/YYYY-MM-DD-2d-textos-historia.md`, se a pasta `fontes/` existir, ou listar no próprio rascunho com o caminho de origem.
+- [ ] **Passo 2:** Rascunhar a seção "A história" do README:
+  - 3 a 5 parágrafos curtos, em segunda pessoa ou narrador, no tom de horror cósmico;
+  - cada afirmação sustentada por um fato `(d)` da spec ou por um texto do 2D; marcar entre colchetes, no rascunho, a origem de cada parágrafo;
+  - ideias ainda `(i)` na spec (por exemplo, o Demônio como sobrevivente da própria possessão) ficam fora do texto ou aparecem como pergunta separada para Pedro;
+  - sem nomes próprios novos de lugares, personagens ou deuses sem aprovação.
+- [ ] **Passo 3:** Mostrar o rascunho a Pedro, com as perguntas abertas numa lista à parte (nome do herói, origem do Poço, o que há no fundo, tom). Aplicar as respostas.
+- [ ] **Passo 4:** Com o "aprovado" de Pedro:
+  - substituir o marcador `<!-- história: T34 -->` do README pelo texto final, sem os colchetes de origem;
+  - registrar a história aprovada como `(d)` em `context/produto.md` e a decisão em `context/decisoes.md`;
+  - rodar `python lint.py`.
+- [ ] **Passo 5:** Commit `docs: add game story to readme`.
+
+**Pronto quando:** Pedro aprovou o texto, ele está no README e em `context/produto.md` como `(d)`, e o lint passa.
 
 ---
 
