@@ -295,6 +295,9 @@ def render_turnaround(objs, out_dir, size=1024):
             bpy.data.cameras.remove(dados)
     cena.world = mundo_antigo
     bpy.data.worlds.remove(mundo)
+    # Sem isto a camada de vista ainda lista os objetos removidos (None) e o próximo
+    # _select (ex.: export_glb) quebra.
+    bpy.context.view_layer.update()
     return saida
 
 

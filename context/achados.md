@@ -26,6 +26,8 @@ relacionado:
 - [2026-11-15] (e) **Onde:** plano do Bloco 1B, `docs/superpowers/plans/2026-11-15-tela-e-sensacao-trilha-arte.md`; a prova do pipeline é a tarefa B04 (braseiro), que acrescenta aqui o que aprendeu.
 - [2026-11-14] (e) **Reprodução:** não é bug; vem das restrições — modelos 3D originais, Pedro nunca usou Blender, geração 3D por IA local exige NVIDIA (ausente nesta máquina), orçamento R$ 0.
 - [2026-11-14] (i) **Fix / mitigação:** guia de estilo antes da produção em série; conceito do Cavaleiro aprovado por Pedro antes de modelar; prova do pipeline IA → Blender → Godot com uma peça pequena; pré-visualizações renderizadas a cada etapa. A trilha de jogo segue com provisórios para não esperar a arte.
+- [2026-11-15] (e) **O que a prova B04 mostrou:** o TRELLIS.2 não passou do Space (cota ZeroGPU anônima zerada, conta do Hugging Face falhou ao ser criada, depois o Space parou); o FLUX pela página funcionou. O braseiro saiu modelado por script no Blender a partir da imagem, em cerca de uma hora de ajuste e um minuto por reconstrução, com 2.144 triângulos e textura assada; Godot importou sem ajuste e a suíte cobre orçamento, escala e cena. O caminho imagem → 3D por IA segue sem prova.
+- [2026-11-15] (i) **Mitigação nova:** props e peças rígidas (braseiro, espada, kit modular) podem ser modelados por script sem depender de Space; para Cavaleiro e Cultista, testar o Meshy grátis com uma imagem antes da B06.
 
 ## A03 · Teste que quebrava passava como aprovado {#runner-silencioso}
 

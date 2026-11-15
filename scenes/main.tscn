@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=11 format=3]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="PackedScene" path="res://scenes/world/greybox_room.tscn" id="2_room"]
@@ -8,6 +8,7 @@
 [ext_resource type="PackedScene" path="res://scenes/world/veil_wall.tscn" id="6_veil"]
 [ext_resource type="Shader" path="res://shaders/veil_vignette.gdshader" id="7_vignette"]
 [ext_resource type="PackedScene" path="res://scenes/ui/hud_minimal.tscn" id="8_hud"]
+[ext_resource type="PackedScene" path="res://scenes/props/brazier.tscn" id="9_brazier"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_vignette"]
 shader = ExtResource("7_vignette")
@@ -31,6 +32,12 @@ target = NodePath("../Player3D")
 
 [node name="VeilWall" parent="." instance=ExtResource("6_veil")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -8)
+
+[node name="BrazierSW" parent="." instance=ExtResource("9_brazier")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.8, 0, 6.8)
+
+[node name="BrazierSE" parent="." instance=ExtResource("9_brazier")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.8, 0, 6.8)
 
 [node name="VignetteLayer" type="CanvasLayer" parent="."]
 

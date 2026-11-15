@@ -40,13 +40,14 @@ scripts/enemies/     enemy_common.gd, states/
 scripts/world/       veil_wall.gd
 scripts/ui/          hud_minimal.gd, input_prompt.gd
 scripts/main.gd  scripts/autoplay_input.gd  shaders/veil_vignette.gdshader  shaders/veil_dissolve.gdshader
-scenes/              main.tscn, player/, camera/, enemies/, world/, ui/
+scenes/              main.tscn, player/, camera/, enemies/, world/, ui/, props/ (brazier.tscn)
 ```
 - [2026-11-15] (e) `README.md` na raiz (T33), em português do Brasil: o que é o jogo, estado, requisitos, como rodar, controles, depuração, testes e onde está a documentação. A seção da história é um marcador `<!-- história: T34 -->` até a T34.
 
 - [2026-11-15] (i) Trilha de arte (Bloco 1B, B03): `art/brutos/` guarda o material bruto das IAs (fora do Godot por `.gdignore`; arquivos `*.grande.*` fora do git); `assets/models/` guarda os `.glb` prontos que o Godot importa; `docs/arte/` tem o guia de estilo e a paleta; `tools/blender/` tem o kit `ed_blender.py`, o `report.py` e os testes (fora do Godot por `.gdignore`). Registro de origem e licença em `context/assets.md`.
 - [2026-11-15] (i) Fluxo de uma peça: bruto em `art/brutos/<peça>/` → `build.py` da peça roda no Blender sem janela (`tools/blender.sh <script> -- <args>`) usando `ed_blender` (importar, juntar, remesh/decimate até o orçamento, UV, assar a cor, escala e origem nos pés) → `.glb` em `assets/models/` + quatro PNGs de pré-visualização → `report.py` confere orçamento e escala → linha nova em `context/assets.md`.
 - [2026-11-15] (i) Geração por API (B04): `tools/ia/` tem os scripts que chamam os Spaces do Hugging Face pelo `gradio_client` (`flux.py`; fora do Godot por `.gdignore`), rodados por `tools/ia.sh <script> <args>` num venv isolado em `tools/ia/.venv/` (fora do git). Candidatos vão para `.godot/capturas_tmp/ia/<peça>/`; só o escolhido é copiado para `art/brutos/`. Token do Hugging Face: o salvo em `~/.cache/huggingface/token`, nunca no repositório.
+- [2026-11-15] (i) Props modelados por script (B04): `art/props/<nome>/build.py` monta a peça no Blender sem bruto de IA (torno, curvas, primitivas), dá materiais procedurais por parte, junta, faz UV e assa cor e brilho numa malha de um material só; o conceito em `art/brutos/` fica como referência. O Godot extrai as texturas do `.glb` para `assets/models/props/<nome>_textura_*.png`, que também entram no `context/assets.md`. A cena do prop fica em `scenes/props/` (`StaticBody3D` + modelo + colisão + luz).
 
 ## Camadas de colisão {#colisao}
 
