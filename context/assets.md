@@ -21,6 +21,7 @@ Todo arquivo em `assets/models/` e em `art/brutos/` precisa de uma linha na tabe
 - [2026-11-15] (e) **Blender 4.5.15 LTS:** GPL; o que se cria com ele pertence a quem cria. https://www.blender.org/about/license/
 - [2026-11-15] (e) **gradio_client 2.7.2** (cliente da API dos Spaces): Apache 2.0. Os Spaces ZeroGPU dão cota diária de GPU por conta; a cota anônima desta rede estava zerada na primeira chamada ("You have exceeded your ZeroGPU quota (90s requested vs. 0s left)"), então as chamadas usam o token da conta grátis de Pedro. https://github.com/gradio-app/gradio/tree/main/client/python
 - [2026-11-15] (d) Pedro aprovou gerar pela API em vez da página ("aprovamdo"): o Claude opera os Spaces por script e o operador dos brutos passa a ser `claude (api, conta de Pedro)`; ver [[decisoes]].
+- [2026-11-15] (i) **`art/referencias/`** guarda as ampliações de 128 para 1024 px (Lanczos, sobre cinza `#808080`, feitas com Pillow) dos sprites `hero.png` e `cultist.png` do 2D, arte própria do projeto; servem só de entrada para o Qwen-Image-Edit nas B05 e B11 e não vão para o jogo.
 - [2026-11-15] (d) Ferramentas acima confirmadas por Pedro ("o que voce indicar"), ver [[decisoes]].
 
 ## Assets {#assets}
