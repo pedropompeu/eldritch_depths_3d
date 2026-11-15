@@ -13,6 +13,7 @@ Plano: `docs/superpowers/plans/2026-11-14-tela-e-sensacao-trilha-jogo.md`
 |---|---|---|---|---|---|---|---|---|
 | T01 | Pasta, git e project.godot | simples | — | feita | claude-opus-5-5 | 2026-11-14 | aebf5f5 | verificação via --import (ver rulings) |
 | T02 | Runner de testes | médio | T01 | feita | claude-opus-5-5 | 2026-11-14 | 85efc13 | OK: 2 testes; prova de falha deu FALHOU: 1 de 2, código 1 |
+| T02b | Runner reprova erro da engine e teste travado | médio | T02 | feita | claude-opus-5-5 | 2026-11-14 | 291fc4f | achado A03 |
 | T03 | Mapa de controles | simples | T02 | feita | claude-opus-5-5 | 2026-11-14 | 8ba3f9c | OK: 5 testes; ver rulings sobre device -1 |
 | T04 | context/, lint e documentos | simples | T01 | feita | claude-opus-5-5 | 2026-11-14 | 8ff2f4c | lint limpo; decisoes.md ganhou 2 (i) extras: plano em 32 tarefas e formato do [input] |
 | T05 | Busca de autoload | simples | T02 | livre | | | | |
@@ -53,3 +54,4 @@ Formato: `- [data] T<nn> · modelo · <o que foi decidido> — <por quê> — <c
 - [2026-11-14] T03 · claude-opus-5-5 · Ao salvar, a Godot removeu `run/main_scene=""` e `physics/common/physics_ticks_per_second=60` por serem o padrão — comportamento idêntico; a T25 grava `run/main_scene` — nenhum.
 - [2026-11-14] T04 · claude-opus-5-5 · `context/decisoes.md` recebeu duas `(i)` além das três pedidas (plano em 32 tarefas com ledger; mapa de entrada com tecla física e `device = -1`) — são decisões técnicas já tomadas que um modelo novo precisa achar em `context/` — nenhum.
 - [2026-11-14] T04 · claude-opus-5-5 · A partir daqui, a cópia canônica do plano, da spec e do ledger é a do projeto 3D; as do projeto 2D são históricas — evita duas versões vivas — se alguém editar a do 2D, a mudança se perde.
+- [2026-11-14] T02b · claude-opus-5-5 · Runner endurecido depois da T04 (commit 291fc4f): erro da engine durante o teste vira falha, script que não instancia reprova na carga, vigia de 30 s por teste — sem isso um teste quebrado passava e um erro de sintaxe travava a suíte (achado A03) — teste que usa `push_error` de propósito agora reprova; usar `push_warning`.
