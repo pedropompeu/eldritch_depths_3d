@@ -18,7 +18,7 @@ Plano: `docs/superpowers/plans/2026-11-14-tela-e-sensacao-trilha-jogo.md`
 | T04 | context/, lint e documentos | simples | T01 | feita | claude-opus-5-5 | 2026-11-14 | 8ff2f4c | lint limpo; decisoes.md ganhou 2 (i) extras: plano em 32 tarefas e formato do [input] |
 | T05 | Busca de autoload | simples | T02 | feita | claude-opus-5-5 | 2026-11-14 | 95426d6 | OK: 6 testes; teste usa get_node_or_null em vez de get_node (ver rulings) |
 | T06 | Faixas do Véu | simples | T02 | feita | claude-opus-5-5 | 2026-11-14 | 862f575 | OK: 13 testes; teste extra da ordem das faixas |
-| T07 | StatsComponent portado | médio | T05, T06 | livre | | | | |
+| T07 | StatsComponent portado | médio | T05, T06 | feita | claude-opus-5-5 | 2026-11-14 | c2c80af | OK: 22 testes; esperado de test_sem_perks corrigido de 75 para 90 (ver rulings) |
 | T08 | Máquina de estados | simples | T02 | feita | claude-opus-5-5 | 2026-11-14 | b1dbbd1 | OK: 15 testes; chave inexistente dá push_warning |
 | T09 | Matemática de movimento | simples | T02 | feita | claude-opus-5-5 | 2026-11-14 | 7d0e957 | OK: 11 testes (5 novos) |
 | T10 | Modo de entrada | médio | T03, T05 | livre | | | | |
@@ -59,3 +59,4 @@ Formato: `- [data] T<nn> · modelo · <o que foi decidido> — <por quê> — <c
 - [2026-11-14] T05 e T09 · claude-opus-5-5 · Sem commits `docs: start T<nn>` — feitas em sequência numa sessão só, sem outro modelo em paralelo — nenhum.
 - [2026-11-14] T08 · claude-opus-5-5 · `transition_to(String)` do 2D virou `change_state(StringName)` (contrato da T08) e o `@export var initial_state` do 2D ficou como opcional: sem ele, `init` entra no primeiro estado filho — mantém o contrato e deixa a cena escolher outro estado inicial sem código — se alguém preencher `initial_state` por engano, a máquina começa em outro estado.
 - [2026-11-14] T06–T16 · claude-opus-5-5 · Sem commits `docs: start T<nn>` — feitas em sequência numa sessão só, sem outro modelo em paralelo — nenhum.
+- [2026-11-14] T07 · claude-opus-5-5 · Em `test_sem_perks_manager_nao_quebra`, o esperado virou 90 em vez de 75 (plano corrigido) — o código do 2D, que a T07 manda portar sem mudar padrões, desconta o atraso e regenera no mesmo frame com o delta inteiro: 50 + 25 × 0,6 + 25 × 1,0 = 90; 75 só sairia mudando a regra de regeneração — se Pedro quiser que o atraso "coma" o frame, é uma mudança de comportamento a decidir com ele (diferença de no máximo um frame de regeneração a 60 fps).
