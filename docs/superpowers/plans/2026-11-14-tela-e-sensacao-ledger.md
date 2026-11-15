@@ -27,7 +27,7 @@ Plano: `docs/superpowers/plans/2026-11-14-tela-e-sensacao-trilha-jogo.md`
 | T13 | Enquadramentos | simples | T03, T12 | feita | claude-opus-5-5 | 2026-11-14 | 8bb36c3 | OK: 51 testes; teste extra do F7 via _unhandled_input |
 | T14 | Linha do tempo de ações | médio | T02 | feita | claude-opus-5-5 | 2026-11-14 | a73da6d | OK: 56 testes; teste extra de is_in |
 | T15 | Hitbox e hurtbox 3D | difícil | T02 | livre | | | | |
-| T16 | Postura | simples | T02 | livre | | | | |
+| T16 | Postura | simples | T02 | feita | claude-opus-5-5 | 2026-11-14 | 4453290 | OK: 59 testes; escala invertida e sem espera de 2,2 s em relação ao 2D (ver rulings) |
 | T17 | Herói: cena, parado e andar | difícil | T07–T11, T13, T15, T16 | livre | | | | |
 | T18 | Ataque em dois golpes | difícil | T14, T17 | livre | | | | |
 | T19 | Esquiva | difícil | T14, T17 | livre | | | | |
@@ -61,3 +61,4 @@ Formato: `- [data] T<nn> · modelo · <o que foi decidido> — <por quê> — <c
 - [2026-11-14] T06–T16 · claude-opus-5-5 · Sem commits `docs: start T<nn>` — feitas em sequência numa sessão só, sem outro modelo em paralelo — nenhum.
 - [2026-11-14] T07 · claude-opus-5-5 · Em `test_sem_perks_manager_nao_quebra`, o esperado virou 90 em vez de 75 (plano corrigido) — o código do 2D, que a T07 manda portar sem mudar padrões, desconta o atraso e regenera no mesmo frame com o delta inteiro: 50 + 25 × 0,6 + 25 × 1,0 = 90; 75 só sairia mudando a regra de regeneração — se Pedro quiser que o atraso "coma" o frame, é uma mudança de comportamento a decidir com ele (diferença de no máximo um frame de regeneração a 60 fps).
 - [2026-11-14] T12 · claude-opus-5-5 · No `_ready`, o rig salta para a posição do alvo e `distance` começa no enquadramento 1/13 — sem isso, a câmera faria uma varredura desde a origem ao abrir a cena; a T13 troca a distância inicial pelo preset — se Pedro quiser uma entrada animada da câmera, é só tirar o salto.
+- [2026-11-14] T16 · claude-opus-5-5 · Postura segue o contrato da T16, não o 2D: começa em 0 e enche até quebrar (no 2D começava cheia e caía), recupera sem a espera de 2,2 s depois do dano e volta a 0 depois da quebra (no 2D voltava a 65%); retícula visual e som do `AudioManager` ficaram de fora — as tarefas do inimigo (T22–T24) consomem esse contrato; a retícula é visual de outro bloco — sem a espera, a postura do inimigo esvazia logo entre golpes e quebrá-la exige pressão contínua; Pedro ajusta jogando na T32.
