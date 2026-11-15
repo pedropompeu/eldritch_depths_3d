@@ -12,7 +12,7 @@ Plano: `docs/superpowers/plans/2026-11-14-tela-e-sensacao-trilha-jogo.md`
 | Tarefa | Nome | Nível | Depende de | Status | Modelo | Data | Commit | Nota |
 |---|---|---|---|---|---|---|---|---|
 | T01 | Pasta, git e project.godot | simples | — | feita | claude-opus-5-5 | 2026-11-14 | aebf5f5 | verificação via --import (ver rulings) |
-| T02 | Runner de testes | médio | T01 | livre | | | | |
+| T02 | Runner de testes | médio | T01 | feita | claude-opus-5-5 | 2026-11-14 | 85efc13 | OK: 2 testes; prova de falha deu FALHOU: 1 de 2, código 1 |
 | T03 | Mapa de controles | simples | T02 | livre | | | | |
 | T04 | context/, lint e documentos | simples | T01 | livre | | | | |
 | T05 | Busca de autoload | simples | T02 | livre | | | | |
