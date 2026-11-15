@@ -38,7 +38,7 @@ Plano: `docs/superpowers/plans/2026-11-14-tela-e-sensacao-trilha-jogo.md`
 | T24 | Inimigo: atordoado e morte | médio | T23 | feita | claude-opus-5-5 | 2026-11-14 | 93c3840 | OK: 101 testes |
 | T25 | Sala cinza, luz e main | médio | T21, T24 | feita | claude-opus-5-5 | 2026-11-14 | 235c081 | 103 testes; captura descrita no ledger |
 | T26 | Parede do Véu | difícil | T06, T25 | feita | claude-opus-5-5 | 2026-11-14 | 2f35e3f | 108 testes |
-| T27 | Vinheta e tecla de depuração | médio | T26 | livre | | | | |
+| T27 | Vinheta e tecla de depuração | médio | T26 | feita | claude-opus-5-5 | 2026-11-14 | 6f26265 | 113 testes; captura com sanidade 20 conferida |
 | T28 | Rótulos de botão | simples | T10 | livre | | | | |
 | T29 | HUD mínimo | médio | T25, T28 | livre | | | | |
 | T30 | Modo automático e fps | médio | T29 | livre | | | | |
@@ -98,3 +98,6 @@ Formato: `- [data] T<nn> · modelo · <o que foi decidido> — <por quê> — <c
 - [2026-11-14] T26 · claude-opus-5-5 · O material de dissolução é um shader novo, `shaders/veil_dissolve.gdshader` (ruído de valor em duas oitavas, `discard` abaixo de `dissolve`, borda violeta acesa e brilho próprio fraco para a parede ser vista no escuro); mora dentro do `BoxMesh` com `resource_local_to_scene` — custo se errado: só o visual.
 - [2026-11-14] T26 · claude-opus-5-5 · A animação de `dissolve` é um `Tween` que mata o anterior e dura 0,6 s × a distância que falta (abrir no meio do fechamento não reinicia do zero); faixa que volta a `opens_at` cancela o fechamento pendente — custo se errado: nenhum visível.
 - [2026-11-14] T26 · claude-opus-5-5 · Parede posta em `main.tscn` na posição do `DoorSlot` (0; 1,5; −8), não reparentada em tempo de execução; o teste da cena principal confere que as posições coincidem. `Inside` com camada 0, máscara 6 e `monitorable` desligado — custo se errado: mover um nó se o `DoorSlot` mudar.
+- [2026-11-14] T27 · claude-opus-5-5 · Vinheta: raio limpo = mix(1; 0,35; intensidade) da meia-diagonal (corrigida pela proporção da tela), transição de 0,45 e opacidade máxima mix(0,35; 1; intensidade), zerada por `step` quando a intensidade é 0; `CanvasLayer` próprio (`VignetteLayer`, camada 1) — custo se errado: só o visual.
+- [2026-11-14] T27 · claude-opus-5-5 · `--sanity=N` lido por `static func sanity_from_args(args)` (−1 sem argumento ou com valor inválido), aplicado só na build de depuração e só para baixo, via `drain_sanity` (assim vinheta e parede do Véu reagem como no jogo); F9 em `_unhandled_input`. Testes extras: `test_sanidade_atualiza_vinheta`, `test_f9_derruba_sanidade`, `test_argumento_sanidade` — custo se errado: nenhum no jogo final (build de lançamento ignora ambos).
+- [2026-11-14] T27 · claude-opus-5-5 · Captura com `-- --sanity=20` (quadro 19): centro limpo em volta do herói, borda roxa fechando a tela inteira, parede do Véu já aberta. Achado: sobre a sala quase preta o roxo `#1a0f24` é mais claro que o fundo, então a vinheta lê como névoa roxa nas bordas, não como escurecimento — fica para o teste do Pedro (T32) decidir se escurece ou se a cor fica — custo se errado: trocar uma cor.
