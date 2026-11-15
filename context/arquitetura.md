@@ -13,7 +13,8 @@ relacionado:
 ## Stack {#stack}
 
 - [2026-11-14] (e) Godot **4.7.2** (`/home/usuario/.local/bin/godot`), GDScript, git (branch `main`).
-- [2026-11-14] (i) Renderizador **`mobile` provisório**; a T31 do plano mede `mobile` contra `gl_compatibility` e fixa o melhor. Meta: 60 fps em 1080p no vídeo integrado.
+- [2026-11-14] (i) Renderizador **`mobile` provisório**; a T31 do plano mede `mobile` contra `gl_compatibility` e fixa o melhor. Meta: 60 fps em 1080p no vídeo integrado. ~superseded 2026-11-14 → `decisoes.md`: `mobile` fixado por medição na T31.
+- [2026-11-14] (i) Renderizador **`mobile`** fixado por medição (T31; números em `decisoes.md`): média 60 com vsync nos dois renderizadores, `mobile` com mais folga sem vsync (403,7 contra 387,2 fps). Captura provisória em `docs/capturas/2026-11-14-greybox.png`.
 - [2026-11-14] (e) Janela base 1920×1080, stretch `canvas_items` / `expand`, física a 60 ticks/s.
 - [2026-11-14] (d) Remoto `origin` em https://github.com/pedropompeu/eldritch_depths_3d (branch `main`), criado por Pedro; primeiro push em 2026-11-14 por ordem dele.
 - [2026-11-14] (d) **Nenhum addon.** Toda dependência nova passa por Pedro antes. Os addons `phantom_camera` e `limboai` do 2D só funcionam em 2D e não vêm.
