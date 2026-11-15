@@ -39,7 +39,7 @@ Plano: `docs/superpowers/plans/2026-11-14-tela-e-sensacao-trilha-jogo.md`
 | T25 | Sala cinza, luz e main | médio | T21, T24 | feita | claude-opus-5-5 | 2026-11-14 | 235c081 | 103 testes; captura descrita no ledger |
 | T26 | Parede do Véu | difícil | T06, T25 | feita | claude-opus-5-5 | 2026-11-14 | 2f35e3f | 108 testes |
 | T27 | Vinheta e tecla de depuração | médio | T26 | feita | claude-opus-5-5 | 2026-11-14 | 6f26265 | 113 testes; captura com sanidade 20 conferida |
-| T28 | Rótulos de botão | simples | T10 | livre | | | | |
+| T28 | Rótulos de botão | simples | T10 | feita | claude-opus-5-5 | 2026-11-14 | adc18b4 | 117 testes |
 | T29 | HUD mínimo | médio | T25, T28 | livre | | | | |
 | T30 | Modo automático e fps | médio | T29 | livre | | | | |
 | T31 | Renderizador e captura | simples | T30 | livre | | | | |
@@ -101,3 +101,4 @@ Formato: `- [data] T<nn> · modelo · <o que foi decidido> — <por quê> — <c
 - [2026-11-14] T27 · claude-opus-5-5 · Vinheta: raio limpo = mix(1; 0,35; intensidade) da meia-diagonal (corrigida pela proporção da tela), transição de 0,45 e opacidade máxima mix(0,35; 1; intensidade), zerada por `step` quando a intensidade é 0; `CanvasLayer` próprio (`VignetteLayer`, camada 1) — custo se errado: só o visual.
 - [2026-11-14] T27 · claude-opus-5-5 · `--sanity=N` lido por `static func sanity_from_args(args)` (−1 sem argumento ou com valor inválido), aplicado só na build de depuração e só para baixo, via `drain_sanity` (assim vinheta e parede do Véu reagem como no jogo); F9 em `_unhandled_input`. Testes extras: `test_sanidade_atualiza_vinheta`, `test_f9_derruba_sanidade`, `test_argumento_sanidade` — custo se errado: nenhum no jogo final (build de lançamento ignora ambos).
 - [2026-11-14] T27 · claude-opus-5-5 · Captura com `-- --sanity=20` (quadro 19): centro limpo em volta do herói, borda roxa fechando a tela inteira, parede do Véu já aberta. Achado: sobre a sala quase preta o roxo `#1a0f24` é mais claro que o fundo, então a vinheta lê como névoa roxa nas bordas, não como escurecimento — fica para o teste do Pedro (T32) decidir se escurece ou se a cor fica — custo se errado: trocar uma cor.
+- [2026-11-14] T28 · claude-opus-5-5 · Rótulos fixos numa tabela (`LABELS`), conferidos à mão contra o mapa de entrada (teclas físicas 1, 2 e E; botões 12 = D-pad ↓, 11 = D-pad ↑, 1 = B), não lidos do `InputMap` — o brief pede texto fixo; ler do mapa fica para quando houver remapeamento — custo se errado: rótulo desatualizado se alguém mudar o atalho sem mexer aqui.
