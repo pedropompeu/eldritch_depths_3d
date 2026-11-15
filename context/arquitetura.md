@@ -42,6 +42,7 @@ scripts/ui/          hud_minimal.gd, input_prompt.gd
 scripts/main.gd  scripts/autoplay_input.gd  shaders/veil_vignette.gdshader  shaders/veil_dissolve.gdshader
 scenes/              main.tscn, player/, camera/, enemies/, world/, ui/
 ```
+- [2026-11-15] (e) `README.md` na raiz (T33), em português do Brasil: o que é o jogo, estado, requisitos, como rodar, controles, depuração, testes e onde está a documentação. A seção da história é um marcador `<!-- história: T34 -->` até a T34.
 
 ## Camadas de colisão {#colisao}
 
