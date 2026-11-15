@@ -36,7 +36,7 @@ Plano: `docs/superpowers/plans/2026-11-14-tela-e-sensacao-trilha-jogo.md`
 | T22 | Inimigo: perseguição | médio | T07, T08, T15, T16 | feita | claude-opus-5-5 | 2026-11-14 | 5a1caf8 | OK: 91 testes |
 | T23 | Inimigo: aviso, golpe e recarga | médio | T14, T22 | feita | claude-opus-5-5 | 2026-11-14 | 59cd72c | OK: 97 testes |
 | T24 | Inimigo: atordoado e morte | médio | T23 | feita | claude-opus-5-5 | 2026-11-14 | 93c3840 | OK: 101 testes |
-| T25 | Sala cinza, luz e main | médio | T21, T24 | livre | | | | |
+| T25 | Sala cinza, luz e main | médio | T21, T24 | feita | claude-opus-5-5 | 2026-11-14 | 235c081 | 103 testes; captura descrita no ledger |
 | T26 | Parede do Véu | difícil | T06, T25 | livre | | | | |
 | T27 | Vinheta e tecla de depuração | médio | T26 | livre | | | | |
 | T28 | Rótulos de botão | simples | T10 | livre | | | | |
@@ -90,3 +90,7 @@ Formato: `- [data] T<nn> · modelo · <o que foi decidido> — <por quê> — <c
 - [2026-11-14] T24 · claude-opus-5-5 · Em `_on_hurt` o dano entra antes da postura: o golpe que quebra a postura não é crítico, só os seguintes; golpe que mata não mexe na postura; morto ignora golpes; `stunned` termina em `chase` (que volta a `idle` se o alvo estiver longe) — custo se errado: um golpe a mais ou a menos de crítico por quebra.
 - [2026-11-14] T24 · claude-opus-5-5 · XP dado é `Stats.xp_reward` do inimigo (padrão 35, o valor do brief) ao `StatsComponent` do alvo, procurado na propriedade `stats` (o `Player3D`) ou no primeiro filho; morte desliga camada/máscara do corpo na hora e formas e `monitorable` da hurtbox por `set_deferred`; `queue_free` contado em passos (1 s) no `dead`, não por timer — custo se errado: nenhum visível.
 - [2026-11-14] T24 · claude-opus-5-5 · Teste extra `test_golpe_comum_enche_postura` além dos 3 do brief; a morte também checa colisão desligada, golpe póstumo e o apagar em 1 s — custo se errado: nenhum, só testes.
+- [2026-11-14] T25 · claude-opus-5-5 · Sala 16×16 com piso 16,4×0,5×16,4 e paredes de 0,4 m de espessura centradas em ±8; a parede norte é dividida em duas (7,2 m cada) para deixar a porta de 2 m; antessala 4×4 em z −10,1; coluna 1×1 em (4, 1,5, 0); `DoorSlot` no centro do vão a 1,5 m de altura — o brief fixa medidas, não posições exatas — custo se errado: reposicionar nós na cena.
+- [2026-11-14] T25 · claude-opus-5-5 · WorldEnvironment mora em `greybox_room.tscn`, não em `main.tscn`; a "névoa de profundidade com densidade 0,03" virou a névoa exponencial do Godot com `fog_density` 0,03 — custo se errado: mover um nó ou trocar o modo da névoa.
+- [2026-11-14] T25 · claude-opus-5-5 · O corpo e a seta de mira do herói não projetam sombra (`cast_shadow` off) e a HeroLight ganhou `omni_attenuation` 0,5 (fora do brief): sem isso o herói virava um disco preto sob a própria luz e a poça de luz mal passava de 3 m — custo se errado: ajuste visual no teste do Pedro (T32).
+- [2026-11-14] T25 · claude-opus-5-5 · Captura (90 quadros, 1080p, Forward Mobile, RADV): sala quase toda no escuro, poça âmbar de ~4 m em volta do herói com o topo da cápsula aceso e o corpo escuro, paredes e coluna só como silhuetas, seta de mira dourada legível; o inimigo vem até o herói, acende vermelho vivo no aviso (quadro 66) e projeta sombra comprida para longe da luz; no último quadro está em recuperação, escuro, ao lado do herói.
