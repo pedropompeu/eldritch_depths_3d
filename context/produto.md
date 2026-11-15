@@ -54,3 +54,12 @@ criado: 2026-11-14
 - [2026-11-14] (d) **Sanidade zero = Possessão:** nasce do herói um Senhor de lacaios que precisa ser derrotado; perder é morrer.
 - [2026-11-14] (i) Proposta: três faixas (100–60, 60–30, 30–0), cada uma revelando e cobrando mais. **O efeito de cada faixa segue em aberto com Pedro.**
 - [2026-11-14] (i) A sanidade cai devagar no Poço e com golpes cósmicos; a escolha do jogador é quando usar o láudano ou voltar ao santuário.
+
+## História {#historia}
+
+- [2026-11-15] (d) **Cada jogador dá o nome ao próprio personagem**; o texto da história não nomeia o herói.
+- [2026-11-15] (d) A história pode ser **criada** (a spec só tinha a premissa), **com nomes novos** de lugares e personagens, que Pedro aprova junto com o texto.
+- [2026-11-15] (d) O que move o herói: a **esperança de salvar o mundo e a Princesa**, "à la Mario Bros".
+- [2026-11-15] (d) Linguagem em **português arcaico** (tratamento por "tu").
+- [2026-11-15] (d) As **classes** entram na história **já agora**, mesmo antes de Mago e Demônio existirem no jogo.
+- [2026-11-15] (d) **O Demônio é alguém que sobreviveu à própria possessão** — promove a ideia `(i)` da spec §4.4/§4.6.
