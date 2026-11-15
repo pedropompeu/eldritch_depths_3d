@@ -37,7 +37,7 @@ scripts/camera/      camera_rig_3d.gd
 scripts/enemies/     enemy_common.gd, states/
 scripts/world/       veil_wall.gd
 scripts/ui/          hud_minimal.gd, input_prompt.gd
-scripts/main.gd  shaders/veil_vignette.gdshader  shaders/veil_dissolve.gdshader
+scripts/main.gd  scripts/autoplay_input.gd  shaders/veil_vignette.gdshader  shaders/veil_dissolve.gdshader
 scenes/              main.tscn, player/, camera/, enemies/, world/, ui/
 ```
 
