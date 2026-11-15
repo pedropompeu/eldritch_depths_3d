@@ -70,11 +70,18 @@ func step(delta: float) -> void:
 
 
 ## Acelera (ou freia, sem entrada) a velocidade horizontal rumo a `move_dir`.
-func walk(delta: float) -> void:
+## `speed_scale` reduz a velocidade máxima (o ataque anda a 20%).
+func walk(delta: float, speed_scale := 1.0) -> void:
 	var accel := PlayerMotion.ACCEL if move_dir != Vector3.ZERO else PlayerMotion.DECEL
-	var horiz := PlayerMotion.compute_velocity(Vector3(velocity.x, 0.0, velocity.z), move_dir, PlayerMotion.WALK_SPEED, accel, delta)
+	var horiz := PlayerMotion.compute_velocity(Vector3(velocity.x, 0.0, velocity.z), move_dir, PlayerMotion.WALK_SPEED * speed_scale, accel, delta)
 	velocity.x = horiz.x
 	velocity.z = horiz.z
+
+
+## Tenta começar o ataque (T18). Falso sem vigor ou sem o estado na cena.
+func try_attack() -> bool:
+	var ataque: State = state_machine.states.get(&"attack")
+	return ataque != null and ataque.try_begin()
 
 
 func horizontal_speed() -> float:

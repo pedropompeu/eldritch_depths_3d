@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3]
+[gd_scene load_steps=17 format=3]
 
 [ext_resource type="Script" path="res://scripts/player/player_3d.gd" id="1_player"]
 [ext_resource type="Script" path="res://scripts/components/stats_component.gd" id="2_stats"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" path="res://scripts/player/states/move.gd" id="6_move"]
 [ext_resource type="Script" path="res://scripts/combat/hitbox_3d.gd" id="7_hitbox"]
 [ext_resource type="Script" path="res://scripts/combat/hurtbox_3d.gd" id="8_hurtbox"]
+[ext_resource type="Script" path="res://scripts/player/states/attack.gd" id="9_attack"]
 
 [sub_resource type="CapsuleShape3D" id="Capsule_corpo"]
 radius = 0.35
@@ -59,6 +60,9 @@ script = ExtResource("5_idle")
 
 [node name="Move" type="Node" parent="StateMachine"]
 script = ExtResource("6_move")
+
+[node name="Attack" type="Node" parent="StateMachine"]
+script = ExtResource("9_attack")
 
 [node name="Sword" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, -0.9)
