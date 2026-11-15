@@ -36,6 +36,18 @@ func damage_posture(amount: float) -> void:
 		posture_broken.emit()
 
 
+## Encerra a quebra antes do `stagger_duration` (o dono decide quanto dura o
+## atordoamento; o inimigo comum usa 1,5 s). Sem quebra, não faz nada.
+func recover() -> void:
+	if not is_broken:
+		return
+	is_broken = false
+	_stagger_left = 0.0
+	current = 0.0
+	posture_changed.emit(current, max_posture)
+	posture_recovered.emit()
+
+
 func step(delta: float) -> void:
 	if is_broken:
 		_stagger_left -= delta
