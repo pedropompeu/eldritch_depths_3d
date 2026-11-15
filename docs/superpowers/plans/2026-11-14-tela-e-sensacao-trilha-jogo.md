@@ -67,6 +67,7 @@ Agentes externos (OpenCode, Gemini) só com modelos ou cotas gratuitas.
   - Uma `(i)` nunca sustenta outra `(i)`.
   - Rodar `python lint.py` depois de mexer em `context/`.
 - **Testes:** um único comando para todas as tarefas, `tools/test.sh` (criado na T02). A última linha de sucesso é `OK: <n> testes`, com código de saída 0.
+- **Erros da engine reprovam o teste:** o runner captura todo erro logado durante um teste (erro de script, `push_error`, erro de shader) e o conta como falha. Para um caso esperado, como chave inexistente na T08, use `push_warning`, que não reprova. Um teste que passa de 30 s, travado num `await` ou abortado, interrompe a suíte com `FALHOU`.
 - **Testes com nós na árvore:** depois de adicionar `Area3D` ou corpos, esperar 2 frames de física (`await tree.physics_frame` duas vezes) antes de checar sobreposições. Liberar com `queue_free()` no fim de cada teste.
 - **Pasta temporária:** capturas de tela e quadros vão para `/tmp/claude-1001/-home-usuario-Dev-Suporte/00369e3d-1515-4469-bd6e-f0b40f59328c/scratchpad/`. Se essa pasta não existir na sua sessão, use a pasta temporária da sua sessão, nunca o repositório.
 
@@ -203,6 +204,7 @@ eldritch_depths_3d_20261114/
      - depois, move as falhas do objeto para o relatório;
   4. imprime `FAIL <arquivo>::<método>: <mensagem>` para cada falha;
   5. termina com `OK: <n> testes` e `quit(0)`, ou com `FALHOU: <f> de <n>` e `quit(1)`.
+- O runner também registra um `Logger` (`OS.add_logger`) que transforma erro da engine durante o teste em falha (avisos não contam), reprova na carga o script que não instancia (`can_instantiate()`), e tem um vigia de 30 s por teste em `_process`. Isso foi acrescentado na execução da T02 (ver rulings no ledger).
 - `tools/test.sh` (executável) roda `godot --headless --path . --import`, para registrar as classes novas, e depois `godot --headless --path . -s res://tests/run_tests.gd`. O script sai com o código do segundo comando.
 
 **Passos:**

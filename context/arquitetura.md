@@ -67,6 +67,7 @@ scenes/              main.tscn, player/, camera/, enemies/, world/, ui/
 
 - [2026-11-14] (i) Runner caseiro, sem GUT: `tools/test.sh` importa o projeto e roda `res://tests/run_tests.gd`. Sucesso termina em `OK: <n> testes`, código 0; falha imprime `FAIL <arquivo>::<método>: <msg>` e `FALHOU: <f> de <n>`, código 1.
 - [2026-11-14] (i) Cada `tests/test_*.gd` estende `TestCase` (`assert_eq`, `assert_near`, `assert_true`, `assert_false`, `assert_vec_near`); método `test_*` com 1 argumento recebe a `SceneTree`.
+- [2026-11-14] (i) O runner conta como falha todo erro da engine logado durante o teste (via `Logger` em `OS.add_logger`; `push_warning` não conta), reprova script que não instancia e interrompe a suíte se um teste passar de 30 s. `tools/test.sh` ainda tem `timeout 900` como última rede.
 - [2026-11-14] (e) `godot --headless --path . --quit` sai com código 1 quando não há cena principal; para só abrir o projeto, usar `--import`.
 
 ## Regras técnicas {#regras}
