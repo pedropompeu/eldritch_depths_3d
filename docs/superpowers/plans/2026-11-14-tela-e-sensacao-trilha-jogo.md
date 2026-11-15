@@ -386,7 +386,7 @@ func test_faixas_nos_limites():
   | `test_laudano_restaura_metade` | `drain_sanity(80)`, depois `use_laudanum_flask()` | retorna `true`; sanidade 70; `current_laudanum_flasks` igual a 1 |
   | `test_laudano_reabre_faixa` | `drain_sanity(50)`, depois `use_laudanum_flask()` | emite `veil_band_changed(CLARO)` |
   | `test_vigor_exausto_nao_regenera` | `consume_stamina(100)`, `_process(0.9)` e depois `_process(0.7)` | vigor 0 após o primeiro passo; vigor > 0 após o segundo |
-  | `test_sem_perks_manager_nao_quebra` | `consume_stamina(50)`, `_process(0.6)` e depois `_process(1.0)` | vigor ≈ 75 depois do segundo passo (regeneração de 25/s) |
+  | `test_sem_perks_manager_nao_quebra` | `consume_stamina(50)`, `_process(0.6)` e depois `_process(1.0)` | vigor ≈ 90 depois do segundo passo: 50 + 25 × 0,6 + 25 × 1,0, porque o frame que encerra o atraso já regenera com o delta inteiro, como no 2D (corrigido na execução; era 75) |
   | `test_nivel` | `gain_xp(80)` | `level` 2, `max_health` 115, `max_stamina` 110, `xp_to_next` 116 |
 - [ ] **Passo 2:** Rodar e ver falhar.
 - [ ] **Passo 3:** Copiar o arquivo do 2D e fazer exatamente estas mudanças:
