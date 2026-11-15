@@ -3,3 +3,4 @@
 *.tmp
 art/brutos/*.grande.*
 tools/ia/.venv/
+__pycache__/
