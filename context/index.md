@@ -18,6 +18,7 @@ RPG de ação 3D (Godot 4.7.2) de horror cósmico em que a sanidade é o Véu da
 | Regras do jogo, visão e escopo | [[produto]] |
 | Antes de reabrir ou tomar uma decisão | [[decisoes]] |
 | Antes de dizer que algo está pronto | [[achados]] |
+| Arte: origem e licença de ferramentas e arquivos | [[assets]] |
 
 ## Fora de `context/`
 
