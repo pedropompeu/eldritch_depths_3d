@@ -16,6 +16,7 @@ config/features=PackedStringArray("4.7")
 [autoload]
 
 Autoloads="*res://scripts/core/autoloads.gd"
+InputMode="*res://scripts/core/input_mode.gd"
 
 [display]
 
