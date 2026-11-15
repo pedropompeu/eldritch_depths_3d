@@ -15,6 +15,7 @@ relacionado:
 - [2026-11-14] (e) Godot **4.7.2** (`/home/usuario/.local/bin/godot`), GDScript, git (branch `main`).
 - [2026-11-14] (i) Renderizador **`mobile` provisório**; a T31 do plano mede `mobile` contra `gl_compatibility` e fixa o melhor. Meta: 60 fps em 1080p no vídeo integrado.
 - [2026-11-14] (e) Janela base 1920×1080, stretch `canvas_items` / `expand`, física a 60 ticks/s.
+- [2026-11-14] (d) Remoto `origin` em https://github.com/pedropompeu/eldritch_depths_3d (branch `main`), criado por Pedro; primeiro push em 2026-11-14 por ordem dele.
 - [2026-11-14] (d) **Nenhum addon.** Toda dependência nova passa por Pedro antes. Os addons `phantom_camera` e `limboai` do 2D só funcionam em 2D e não vêm.
 - [2026-11-14] (i) Do 2D vêm só `StatsComponent`, `PostureComponent` e a máquina de estados, generalizados; jogador, inimigo, câmera e mundo são escritos do zero.
 

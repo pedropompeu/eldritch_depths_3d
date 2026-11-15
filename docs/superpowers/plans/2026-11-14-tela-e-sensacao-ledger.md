@@ -31,7 +31,7 @@ Plano: `docs/superpowers/plans/2026-11-14-tela-e-sensacao-trilha-jogo.md`
 | T17 | Herói: cena, parado e andar | difícil | T07–T11, T13, T15, T16 | feita | claude-opus-5-5 | 2026-11-14 | 5b521c9 | 4 testes; cena roda sem avisos |
 | T18 | Ataque em dois golpes | difícil | T14, T17 | feita | claude-opus-5-5 | 2026-11-14 | d77e066 | 4 testes; suíte 75 |
 | T19 | Esquiva | difícil | T14, T17 | feita | claude-opus-5-5 | 2026-11-14 | 9b13cb5 | 4 testes; suíte 79 |
-| T20 | Parry | médio | T17 | livre | | | | |
+| T20 | Parry | médio | T17 | feita | claude-opus-5-5 | 2026-11-14 | 5ec3a2a | 3 testes; suíte 82 |
 | T21 | Dano, morte e frascos | médio | T20 | livre | | | | |
 | T22 | Inimigo: perseguição | médio | T07, T08, T15, T16 | livre | | | | |
 | T23 | Inimigo: aviso, golpe e recarga | médio | T14, T22 | livre | | | | |
@@ -71,3 +71,6 @@ Formato: `- [data] T<nn> · modelo · <o que foi decidido> — <por quê> — <c
 - [2026-11-14] T18 · claude-opus-5-5 · A janela de combo é só a recuperação, sem guardar o aperto feito no preparo ou na fase ativa; apertar na recuperação do golpe 2 encadeia o golpe 1 (18 de vigor) — leitura literal do plano — custo se errado: se o combo parecer duro no teste de Pedro (T32), acrescentar um buffer de entrada.
 - [2026-11-14] T19 · claude-opus-5-5 · O teste de travada conta os sinais `Hurtbox.hurt` (0 durante a esquiva) e tem um controle (o mesmo golpe acerta o herói parado), porque "vida continua 100" passaria sem esquiva nenhuma: até a T20 nada aplica dano no herói. O golpe é ativado logo depois do passo de 0,22 s, que é a ordem do frame no jogo (o herói marca a invencibilidade antes de os golpes chegarem) — custo se errado: nenhum no código; só o teste é mais exigente que o plano.
 - [2026-11-14] T19 · claude-opus-5-5 · A esquiva sai só de `idle` e `move` (não cancela o ataque), tem direção fixa ao começar e mantém 10,4 m/s até o fim, sem frear; ao sair, `move`/`idle` freiam com `DECEL` — o plano não fala em cancelar ataque nem em curva de velocidade — custo se errado: se Pedro quiser cancelar a recuperação do ataque com esquiva (comum em soulslike), é uma checagem em `attack.gd`.
+- [2026-11-14] T20 · claude-opus-5-5 · A janela do parry segue o mesmo esquema da esquiva: `parrying` liga já no `enter` (vale golpe no frame do aperto) e, a cada passo, é marcado pelo intervalo do frame inteiro antes de os golpes chegarem; no parry o herói freia até parar e encara a mira — o plano não diz se o herói anda no parry — custo se errado: trocar o `walk(delta, 0.0)` por outra escala.
+- [2026-11-14] T20 · claude-opus-5-5 · O `PostureComponent` de quem bateu é o primeiro filho desse tipo em `hitbox.source`; a troca para `hurt` só acontece se o estado existir e o herói ainda estiver vivo, para não gerar aviso até a T21 e não disputar com `dead` — custo se errado: a T21 pode trocar a busca por um campo explícito.
+- [2026-11-14] T20 · claude-opus-5-5 · `test_esquiva_invencivel_com_travada` (T19) passou a comparar a vida com a de logo antes da esquiva, porque o golpe de controle agora tira 20 de vida de verdade — o que o teste prova (nenhum golpe novo na invencibilidade) não muda — custo se errado: nenhum.
