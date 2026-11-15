@@ -29,3 +29,4 @@ Uma linha por arquivo. `arquivo` é o caminho relativo à raiz do repositório; 
 
 | arquivo | tipo | origem | ferramenta e modelo | licença | operador | data | prompt | sha256 |
 |---|---|---|---|---|---|---|---|---|
+| art/brutos/2026-11-15-flux-braseiro.webp | bruto | ia | FLUX.1 [schnell], Space black-forest-labs/FLUX.1-schnell, 1024×1024, 4 passos | Apache 2.0 | pedro (página do Space) | 2026-11-15 | art/prompts/braseiro.md | 3c1f89d9367fbbf4787ecfb303807110024212f0909a930ad2c6ce77b89edf44 |
