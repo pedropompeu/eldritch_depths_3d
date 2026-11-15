@@ -25,7 +25,7 @@ Plano: `docs/superpowers/plans/2026-11-14-tela-e-sensacao-trilha-jogo.md`
 | T11 | Mira | médio | T02 | feita | claude-opus-5-5 | 2026-11-14 | 4da0630 | OK: 43 testes; 3 testes extras (mouse sobre o herói, altura diferente, NaN) |
 | T12 | Câmera: distância e seguimento | médio | T02 | feita | claude-opus-5-5 | 2026-11-14 | 6213f30 | OK: 47 testes; rig nasce em cima do alvo (ver rulings) |
 | T13 | Enquadramentos | simples | T03, T12 | feita | claude-opus-5-5 | 2026-11-14 | 8bb36c3 | OK: 51 testes; teste extra do F7 via _unhandled_input |
-| T14 | Linha do tempo de ações | médio | T02 | livre | | | | |
+| T14 | Linha do tempo de ações | médio | T02 | feita | claude-opus-5-5 | 2026-11-14 | a73da6d | OK: 56 testes; teste extra de is_in |
 | T15 | Hitbox e hurtbox 3D | difícil | T02 | livre | | | | |
 | T16 | Postura | simples | T02 | livre | | | | |
 | T17 | Herói: cena, parado e andar | difícil | T07–T11, T13, T15, T16 | livre | | | | |
