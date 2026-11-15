@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600">
+<rect width="100%" height="100%" fill="#101014"/>
+<rect x="10" y="10" width="180" height="130" rx="6" fill="#05060a" stroke="#444" stroke-width="1"/>
+<text x="20" y="110" font-family="sans-serif" font-size="18" fill="#ddd">breu</text>
+<text x="20" y="132" font-family="monospace" font-size="16" fill="#ddd">#05060a</text>
+<rect x="210" y="10" width="180" height="130" rx="6" fill="#0b0d12" stroke="#444" stroke-width="1"/>
+<text x="220" y="110" font-family="sans-serif" font-size="18" fill="#ddd">nevoa</text>
+<text x="220" y="132" font-family="monospace" font-size="16" fill="#ddd">#0b0d12</text>
+<rect x="410" y="10" width="180" height="130" rx="6" fill="#1c1c22" stroke="#444" stroke-width="1"/>
+<text x="420" y="110" font-family="sans-serif" font-size="18" fill="#ddd">pedra-sombra</text>
+<text x="420" y="132" font-family="monospace" font-size="16" fill="#ddd">#1c1c22</text>
+<rect x="610" y="10" width="180" height="130" rx="6" fill="#3a3a40" stroke="#444" stroke-width="1"/>
+<text x="620" y="110" font-family="sans-serif" font-size="18" fill="#ddd">pedra</text>
+<text x="620" y="132" font-family="monospace" font-size="16" fill="#ddd">#3a3a40</text>
+<rect x="10" y="160" width="180" height="130" rx="6" fill="#5c5852" stroke="#444" stroke-width="1"/>
+<text x="20" y="260" font-family="sans-serif" font-size="18" fill="#ddd">pedra-gasta</text>
+<text x="20" y="282" font-family="monospace" font-size="16" fill="#ddd">#5c5852</text>
+<rect x="210" y="160" width="180" height="130" rx="6" fill="#1e1f26" stroke="#444" stroke-width="1"/>
+<text x="220" y="260" font-family="sans-serif" font-size="18" fill="#ddd">aco-escuro</text>
+<text x="220" y="282" font-family="monospace" font-size="16" fill="#ddd">#1e1f26</text>
+<rect x="410" y="160" width="180" height="130" rx="6" fill="#3c3e4a" stroke="#444" stroke-width="1"/>
+<text x="420" y="260" font-family="sans-serif" font-size="18" fill="#ddd">aco</text>
+<text x="420" y="282" font-family="monospace" font-size="16" fill="#ddd">#3c3e4a</text>
+<rect x="610" y="160" width="180" height="130" rx="6" fill="#8a8c96" stroke="#444" stroke-width="1"/>
+<text x="620" y="260" font-family="sans-serif" font-size="18" fill="#111">aco-gume</text>
+<text x="620" y="282" font-family="monospace" font-size="16" fill="#111">#8a8c96</text>
+<rect x="10" y="310" width="180" height="130" rx="6" fill="#3c2a28" stroke="#444" stroke-width="1"/>
+<text x="20" y="410" font-family="sans-serif" font-size="18" fill="#ddd">couro</text>
+<text x="20" y="432" font-family="monospace" font-size="16" fill="#ddd">#3c2a28</text>
+<rect x="210" y="310" width="180" height="130" rx="6" fill="#29193a" stroke="#444" stroke-width="1"/>
+<text x="220" y="410" font-family="sans-serif" font-size="18" fill="#ddd">veu-fundo</text>
+<text x="220" y="432" font-family="monospace" font-size="16" fill="#ddd">#29193a</text>
+<rect x="410" y="310" width="180" height="130" rx="6" fill="#9e59ff" stroke="#444" stroke-width="1"/>
+<text x="420" y="410" font-family="sans-serif" font-size="18" fill="#111">runa</text>
+<text x="420" y="432" font-family="monospace" font-size="16" fill="#111">#9e59ff</text>
+<rect x="610" y="310" width="180" height="130" rx="6" fill="#3a0f1e" stroke="#444" stroke-width="1"/>
+<text x="620" y="410" font-family="sans-serif" font-size="18" fill="#ddd">manto-vinho</text>
+<text x="620" y="432" font-family="monospace" font-size="16" fill="#ddd">#3a0f1e</text>
+<rect x="10" y="460" width="180" height="130" rx="6" fill="#6c1f34" stroke="#444" stroke-width="1"/>
+<text x="20" y="560" font-family="sans-serif" font-size="18" fill="#ddd">manto-carmim</text>
+<text x="20" y="582" font-family="monospace" font-size="16" fill="#ddd">#6c1f34</text>
+<rect x="210" y="460" width="180" height="130" rx="6" fill="#ffb36b" stroke="#444" stroke-width="1"/>
+<text x="220" y="560" font-family="sans-serif" font-size="18" fill="#111">luz-heroi</text>
+<text x="220" y="582" font-family="monospace" font-size="16" fill="#111">#ffb36b</text>
+<rect x="410" y="460" width="180" height="130" rx="6" fill="#ff8a3d" stroke="#444" stroke-width="1"/>
+<text x="420" y="560" font-family="sans-serif" font-size="18" fill="#111">brasa</text>
+<text x="420" y="582" font-family="monospace" font-size="16" fill="#111">#ff8a3d</text>
+<rect x="610" y="460" width="180" height="130" rx="6" fill="#ff2020" stroke="#444" stroke-width="1"/>
+<text x="620" y="560" font-family="sans-serif" font-size="18" fill="#ddd">aviso</text>
+<text x="620" y="582" font-family="monospace" font-size="16" fill="#ddd">#ff2020</text>
+</svg>
