@@ -21,7 +21,7 @@ Plano: `docs/superpowers/plans/2026-11-15-tela-e-sensacao-trilha-arte.md`
 | B06 | Cavaleiro — malha limpa | arte | B04, B05, T32 (a) | livre | | | | [Pedro] gera 3D; portão |
 | B07 | Cavaleiro — textura pintada | arte | B06 | livre | | | | portão |
 | B08 | Espada longa | arte | B03, B05 | feita | claude-opus-5-5 | 2026-11-15 | | portão. [2026-11-15] `art/personagens/cavaleiro/build_espada.py` → `assets/models/personagens/espada.glb`: 558 tri, 1,30 m, 1 material 512², runas violeta emissivas no sulco; `test_espada` RED→GREEN; 134 testes OK. [Pedro] aprovar ou pedir ajustes ~superseded 2026-11-15: Pedro aprovou ("aprovado"); prévias em `docs/arte/previas/espada/`; commits 20e62c5..aa44231 |
-| B09 | Cavaleiro — rig e animações | difícil | B07, B08 | livre | | | | [Pedro] confere a FAQ e opera o Mixamo |
+| B09 | Cavaleiro — rig e animações | difícil | B07, B08 | livre | | | | [Pedro] confere a FAQ e opera o Mixamo. [2026-11-15] Passo 1: Pedro disse "B09 conferido"; falta registrar a conclusão dele sobre a licença como (d). |
 | B10 | Cavaleiro no jogo | difícil | B09 | livre | | | | portão |
 | B11 | Conceito do Cultista | arte | B01 | em andamento | claude-opus-5-5 | 2026-11-15 | 4268c92 | [Pedro] gera; portão. [2026-11-15] Prompts em `art/prompts/cultista-conceito.md` e referência `art/referencias/cultista-2d-1024.png`. [Pedro] gerar as três vistas pela página e salvar em `art/brutos/`. ~superseded 2026-11-15: Pedro disse "faça voce mesmo" sem token; folha feita pelo Claude como blockout 3D por script (`art/inimigos/cultista/build_conceito.py`) → `docs/arte/cultista-conceito.png` (frente, lado, costas). [Pedro] aprovar ou pedir ajustes |
 | B12 | Cultista — malha e textura | arte | B04, B11 | livre | | | | [Pedro] gera 3D; portão |
