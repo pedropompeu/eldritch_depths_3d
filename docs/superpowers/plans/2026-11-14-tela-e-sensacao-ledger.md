@@ -20,7 +20,7 @@ Plano: `docs/superpowers/plans/2026-11-14-tela-e-sensacao-trilha-jogo.md`
 | T06 | Faixas do Véu | simples | T02 | livre | | | | |
 | T07 | StatsComponent portado | médio | T05, T06 | livre | | | | |
 | T08 | Máquina de estados | simples | T02 | livre | | | | |
-| T09 | Matemática de movimento | simples | T02 | livre | | | | |
+| T09 | Matemática de movimento | simples | T02 | feita | claude-opus-5-5 | 2026-11-14 | 7d0e957 | OK: 11 testes (5 novos) |
 | T10 | Modo de entrada | médio | T03, T05 | livre | | | | |
 | T11 | Mira | médio | T02 | livre | | | | |
 | T12 | Câmera: distância e seguimento | médio | T02 | livre | | | | |
