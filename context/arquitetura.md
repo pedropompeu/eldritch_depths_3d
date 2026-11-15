@@ -44,6 +44,9 @@ scenes/              main.tscn, player/, camera/, enemies/, world/, ui/
 ```
 - [2026-11-15] (e) `README.md` na raiz (T33), em português do Brasil: o que é o jogo, estado, requisitos, como rodar, controles, depuração, testes e onde está a documentação. A seção da história é um marcador `<!-- história: T34 -->` até a T34.
 
+- [2026-11-15] (i) Trilha de arte (Bloco 1B, B03): `art/brutos/` guarda o material bruto das IAs (fora do Godot por `.gdignore`; arquivos `*.grande.*` fora do git); `assets/models/` guarda os `.glb` prontos que o Godot importa; `docs/arte/` tem o guia de estilo e a paleta; `tools/blender/` tem o kit `ed_blender.py`, o `report.py` e os testes (fora do Godot por `.gdignore`). Registro de origem e licença em `context/assets.md`.
+- [2026-11-15] (i) Fluxo de uma peça: bruto em `art/brutos/<peça>/` → `build.py` da peça roda no Blender sem janela (`tools/blender.sh <script> -- <args>`) usando `ed_blender` (importar, juntar, remesh/decimate até o orçamento, UV, assar a cor, escala e origem nos pés) → `.glb` em `assets/models/` + quatro PNGs de pré-visualização → `report.py` confere orçamento e escala → linha nova em `context/assets.md`.
+
 ## Camadas de colisão {#colisao}
 
 - [2026-11-14] (i) Tabela usada por todas as cenas:
@@ -72,6 +75,7 @@ scenes/              main.tscn, player/, camera/, enemies/, world/, ui/
 - [2026-11-14] (i) Runner caseiro, sem GUT: `tools/test.sh` importa o projeto e roda `res://tests/run_tests.gd`. Sucesso termina em `OK: <n> testes`, código 0; falha imprime `FAIL <arquivo>::<método>: <msg>` e `FALHOU: <f> de <n>`, código 1.
 - [2026-11-14] (i) Cada `tests/test_*.gd` estende `TestCase` (`assert_eq`, `assert_near`, `assert_true`, `assert_false`, `assert_vec_near`); método `test_*` com 1 argumento recebe a `SceneTree`.
 - [2026-11-14] (i) O runner conta como falha todo erro da engine logado durante o teste (via `Logger` em `OS.add_logger`; `push_warning` não conta), reprova script que não instancia e interrompe a suíte se um teste passar de 30 s. `tools/test.sh` ainda tem `timeout 900` como última rede.
+- [2026-11-15] (e) Blender **4.5.15 LTS** (`/home/usuario/.local/bin/blender`; outro binário pela variável `BLENDER`). `tools/test_blender.sh` roda `tools/blender/tests/test_ed_blender.py` sem janela, no mesmo formato do runner do Godot (`OK: <n> testes` ou `FAIL ...` + `FALHOU: <x> de <n>`). Suíte de 9 testes em ~3,4 s; uma pré-visualização completa (4 vistas em 1024², Cycles na CPU, 32 amostras) leva ~28 s nesta máquina.
 - [2026-11-14] (e) `godot --headless --path . --quit` sai com código 1 quando não há cena principal; para só abrir o projeto, usar `--import`.
 
 ## Regras técnicas {#regras}
