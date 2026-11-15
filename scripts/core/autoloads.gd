@@ -1,5 +1,5 @@
 extends Node
-## Busca de autoload por nome. Substitui `Engine.has_singleton("<Autoload>")`,
+## Busca de autoload por nome. Substitui a checagem de singleton da Engine,
 ## que sempre retorna falso para autoloads (achado A01 em context/achados.md).
 ##
 ## Uso: `var save := Autoloads.get_autoload(&"SaveManager")`; checar `null`
