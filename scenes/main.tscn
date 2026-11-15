@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scripts/main.gd" id="1_main"]
 [ext_resource type="PackedScene" path="res://scenes/world/greybox_room.tscn" id="2_room"]
@@ -6,6 +6,11 @@
 [ext_resource type="PackedScene" path="res://scenes/camera/camera_rig_3d.tscn" id="4_rig"]
 [ext_resource type="PackedScene" path="res://scenes/enemies/enemy_common.tscn" id="5_enemy"]
 [ext_resource type="PackedScene" path="res://scenes/world/veil_wall.tscn" id="6_veil"]
+[ext_resource type="Shader" path="res://shaders/veil_vignette.gdshader" id="7_vignette"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vignette"]
+shader = ExtResource("7_vignette")
+shader_parameter/intensity = 0.0
 
 [node name="Main" type="Node3D"]
 script = ExtResource("1_main")
@@ -25,3 +30,14 @@ target = NodePath("../Player3D")
 
 [node name="VeilWall" parent="." instance=ExtResource("6_veil")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, -8)
+
+[node name="VignetteLayer" type="CanvasLayer" parent="."]
+
+[node name="Vignette" type="ColorRect" parent="VignetteLayer"]
+material = SubResource("ShaderMaterial_vignette")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
