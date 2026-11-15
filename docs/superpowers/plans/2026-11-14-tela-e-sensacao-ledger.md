@@ -45,7 +45,7 @@ Plano: `docs/superpowers/plans/2026-11-14-tela-e-sensacao-trilha-jogo.md`
 | T31 | Renderizador e captura | simples | T30 | feita | claude-opus-5-5 | 2026-11-14 | eba6798 | `mobile` fixado: com vsync 60/60 nos dois; sem vsync mobile 403,7/364 × gl 387,2/341; captura quadro 70; suíte 125 OK |
 | T32 | Pedro joga e escolhe a câmera | humano | T31 | livre | | | | |
 | T33 | README com como rodar | simples | T31 | feita | claude-opus-5-5 | 2026-11-15 | 2464a2d | 9 seções; tabela conferida tecla a tecla contra o `[input]`; `godot --path . --quit-after 120` (com e sem `--sanity=20`) sem erro; suíte 129 OK; lint OK |
-| T34 | História do jogo no README | médio + Pedro | T33 | feita | claude-opus-5-5 | 2026-11-15 | (este commit) | rascunho 2 aprovado por Pedro ("perfeito"); seis parágrafos em português arcaico; história e nomes como (d) em produto.md; lint OK |
+| T34 | História do jogo no README | médio + Pedro | T33 | feita | claude-opus-5-5 | 2026-11-15 | dfb583b | rascunho 2 aprovado por Pedro ("perfeito"); seis parágrafos em português arcaico; história e nomes como (d) em produto.md; lint OK |
 
 ## Decisões de execução (rulings)
 Formato: `- [data] T<nn> · modelo · <o que foi decidido> — <por quê> — <custo se estiver errado>`
