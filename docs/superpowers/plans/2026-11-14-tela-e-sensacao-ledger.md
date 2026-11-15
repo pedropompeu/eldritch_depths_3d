@@ -21,7 +21,7 @@ Plano: `docs/superpowers/plans/2026-11-14-tela-e-sensacao-trilha-jogo.md`
 | T07 | StatsComponent portado | médio | T05, T06 | feita | claude-opus-5-5 | 2026-11-14 | c2c80af | OK: 22 testes; esperado de test_sem_perks corrigido de 75 para 90 (ver rulings) |
 | T08 | Máquina de estados | simples | T02 | feita | claude-opus-5-5 | 2026-11-14 | b1dbbd1 | OK: 15 testes; chave inexistente dá push_warning |
 | T09 | Matemática de movimento | simples | T02 | feita | claude-opus-5-5 | 2026-11-14 | 7d0e957 | OK: 11 testes (5 novos) |
-| T10 | Modo de entrada | médio | T03, T05 | livre | | | | |
+| T10 | Modo de entrada | médio | T03, T05 | feita | claude-opus-5-5 | 2026-11-14 | 0f7a176 | OK: 31 testes; 1 teste extra (tecla e clique voltam a KBM) |
 | T11 | Mira | médio | T02 | livre | | | | |
 | T12 | Câmera: distância e seguimento | médio | T02 | livre | | | | |
 | T13 | Enquadramentos | simples | T03, T12 | livre | | | | |
