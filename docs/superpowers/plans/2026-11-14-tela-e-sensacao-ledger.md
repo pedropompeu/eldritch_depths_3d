@@ -13,7 +13,7 @@ Plano: `docs/superpowers/plans/2026-11-14-tela-e-sensacao-trilha-jogo.md`
 |---|---|---|---|---|---|---|---|---|
 | T01 | Pasta, git e project.godot | simples | — | feita | claude-opus-5-5 | 2026-11-14 | aebf5f5 | verificação via --import (ver rulings) |
 | T02 | Runner de testes | médio | T01 | feita | claude-opus-5-5 | 2026-11-14 | 85efc13 | OK: 2 testes; prova de falha deu FALHOU: 1 de 2, código 1 |
-| T03 | Mapa de controles | simples | T02 | livre | | | | |
+| T03 | Mapa de controles | simples | T02 | feita | claude-opus-5-5 | 2026-11-14 | 8ba3f9c | OK: 5 testes; ver rulings sobre device -1 |
 | T04 | context/, lint e documentos | simples | T01 | livre | | | | |
 | T05 | Busca de autoload | simples | T02 | livre | | | | |
 | T06 | Faixas do Véu | simples | T02 | livre | | | | |
@@ -49,3 +49,5 @@ Formato: `- [data] T<nn> · modelo · <o que foi decidido> — <por quê> — <c
 
 - [2026-11-14] T01 · claude-opus-5-5 · Verificação trocada de `--quit` para `--import` (plano corrigido) — sem cena principal, `--quit` tenta rodar o jogo e sai com código 1 — nenhum.
 - [2026-11-14] T01–T04 · claude-opus-5-5 · Sem commits `docs: start T<nn>` — as quatro tarefas rodaram em sequência numa sessão só, sem outro modelo em paralelo — nenhum.
+- [2026-11-14] T03 · claude-opus-5-5 · `[input]` gerado por script com `ProjectSettings.save()`, com `device = -1` em todo evento, e teclas por `physical_keycode` — escrever à mão é frágil; sem `-1` o controle só valeria no dispositivo 0; tecla física deixa WASD no lugar em qualquer layout (ABNT2 incluso) — se alguém editar no editor, o editor mantém o formato.
+- [2026-11-14] T03 · claude-opus-5-5 · Ao salvar, a Godot removeu `run/main_scene=""` e `physics/common/physics_ticks_per_second=60` por serem o padrão — comportamento idêntico; a T25 grava `run/main_scene` — nenhum.
