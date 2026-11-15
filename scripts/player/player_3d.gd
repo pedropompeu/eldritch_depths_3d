@@ -14,6 +14,11 @@ const ARROW_HEIGHT := 0.05
 
 @export var camera_rig: CameraRig3D
 @export var base_damage := 20.0
+## Postura que um parry bem-sucedido enche em quem bateu. (i) ajustável no
+## teste de Pedro (T32).
+@export var parry_posture_damage := 50.0
+## Reservado para o bloqueio, que não existe neste bloco: declarado e sem uso.
+@export var shield_mitigation := 0.5
 
 var aim_dir: Vector3 = Vector3.FORWARD
 var move_dir: Vector3 = Vector3.ZERO
@@ -38,6 +43,7 @@ func _init() -> void:
 func _ready() -> void:
 	sword.source = self
 	sword.damage = base_damage
+	hurtbox.hurt.connect(_on_hurt)
 	input = _empty_input()
 	state_machine.init(self)
 	_update_arrow()
@@ -88,9 +94,39 @@ func try_roll() -> bool:
 	return _try_action(&"roll")
 
 
+## Tenta começar o parry (T20). Falso sem vigor ou sem o estado na cena.
+func try_parry() -> bool:
+	return _try_action(&"parry")
+
+
 func _try_action(key: StringName) -> bool:
 	var acao: State = state_machine.states.get(key)
 	return acao != null and acao.try_begin()
+
+
+## Golpe que chegou na hurtbox (a esquiva já filtrou os invulneráveis). No
+## parry, o herói não sofre nada e a postura de quem bateu enche; senão, dano,
+## sanidade e o estado `hurt` (T21).
+func _on_hurt(hitbox: Hitbox3D) -> void:
+	if hurtbox.parrying:
+		var alvo := _posture_of(hitbox.source)
+		if alvo:
+			alvo.damage_posture(parry_posture_damage)
+		return
+	stats.take_damage(hitbox.damage)
+	stats.drain_sanity(hitbox.sanity_damage)
+	if stats.is_alive() and state_machine.states.has(&"hurt"):
+		state_machine.change_state(&"hurt")
+
+
+## O `PostureComponent` filho de `node`, ou `null`.
+static func _posture_of(node: Node) -> PostureComponent:
+	if node == null:
+		return null
+	for filho in node.get_children():
+		if filho is PostureComponent:
+			return filho
+	return null
 
 
 func horizontal_speed() -> float:

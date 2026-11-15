@@ -5,6 +5,8 @@ extends State
 func process_physics(delta: float) -> void:
 	if actor.input.roll and actor.try_roll():
 		return
+	if actor.input.parry and actor.try_parry():
+		return
 	if actor.input.attack and actor.try_attack():
 		return
 	actor.walk(delta)

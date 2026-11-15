@@ -83,6 +83,8 @@ func test_esquiva_invencivel_com_travada(tree: SceneTree) -> void:
 	golpe.activate()
 	assert_eq(contagem.hurt, 1, "controle: o golpe deveria acertar o herói parado")
 	golpe.deactivate()
+	# Desde a T20 o golpe de controle tira vida; vale a vida de antes da esquiva.
+	var vida_antes := heroi.stats.current_health
 
 	_apertar_esquiva(heroi, m[2])
 	heroi.step(0.02)
@@ -90,7 +92,7 @@ func test_esquiva_invencivel_com_travada(tree: SceneTree) -> void:
 	# O golpe do mesmo frame chega depois do passo do herói.
 	golpe.activate()
 	assert_eq(contagem.hurt, 1, "nenhum golpe novo durante a invencibilidade")
-	assert_near(heroi.stats.current_health, 100.0, 0.001)
+	assert_near(heroi.stats.current_health, vida_antes, 0.001)
 	assert_eq(heroi.state_machine.current_state.name, &"Roll")
 	m[0].queue_free()
 

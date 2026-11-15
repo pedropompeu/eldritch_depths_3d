@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3]
+[gd_scene load_steps=19 format=3]
 
 [ext_resource type="Script" path="res://scripts/player/player_3d.gd" id="1_player"]
 [ext_resource type="Script" path="res://scripts/components/stats_component.gd" id="2_stats"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" path="res://scripts/combat/hurtbox_3d.gd" id="8_hurtbox"]
 [ext_resource type="Script" path="res://scripts/player/states/attack.gd" id="9_attack"]
 [ext_resource type="Script" path="res://scripts/player/states/roll.gd" id="10_roll"]
+[ext_resource type="Script" path="res://scripts/player/states/parry.gd" id="11_parry"]
 
 [sub_resource type="CapsuleShape3D" id="Capsule_corpo"]
 radius = 0.35
@@ -67,6 +68,9 @@ script = ExtResource("9_attack")
 
 [node name="Roll" type="Node" parent="StateMachine"]
 script = ExtResource("10_roll")
+
+[node name="Parry" type="Node" parent="StateMachine"]
+script = ExtResource("11_parry")
 
 [node name="Sword" type="Area3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, -0.9)
