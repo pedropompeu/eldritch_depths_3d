@@ -32,7 +32,7 @@ Plano: `docs/superpowers/plans/2026-11-14-tela-e-sensacao-trilha-jogo.md`
 | T18 | Ataque em dois golpes | difícil | T14, T17 | feita | claude-opus-5-5 | 2026-11-14 | d77e066 | 4 testes; suíte 75 |
 | T19 | Esquiva | difícil | T14, T17 | feita | claude-opus-5-5 | 2026-11-14 | 9b13cb5 | 4 testes; suíte 79 |
 | T20 | Parry | médio | T17 | feita | claude-opus-5-5 | 2026-11-14 | 5ec3a2a | 3 testes; suíte 82 |
-| T21 | Dano, morte e frascos | médio | T20 | livre | | | | |
+| T21 | Dano, morte e frascos | médio | T20 | feita | claude-opus-5-5 | 2026-11-14 | cf08433 | OK: 86 testes |
 | T22 | Inimigo: perseguição | médio | T07, T08, T15, T16 | livre | | | | |
 | T23 | Inimigo: aviso, golpe e recarga | médio | T14, T22 | livre | | | | |
 | T24 | Inimigo: atordoado e morte | médio | T23 | livre | | | | |
@@ -74,3 +74,7 @@ Formato: `- [data] T<nn> · modelo · <o que foi decidido> — <por quê> — <c
 - [2026-11-14] T20 · claude-opus-5-5 · A janela do parry segue o mesmo esquema da esquiva: `parrying` liga já no `enter` (vale golpe no frame do aperto) e, a cada passo, é marcado pelo intervalo do frame inteiro antes de os golpes chegarem; no parry o herói freia até parar e encara a mira — o plano não diz se o herói anda no parry — custo se errado: trocar o `walk(delta, 0.0)` por outra escala.
 - [2026-11-14] T20 · claude-opus-5-5 · O `PostureComponent` de quem bateu é o primeiro filho desse tipo em `hitbox.source`; a troca para `hurt` só acontece se o estado existir e o herói ainda estiver vivo, para não gerar aviso até a T21 e não disputar com `dead` — custo se errado: a T21 pode trocar a busca por um campo explícito.
 - [2026-11-14] T20 · claude-opus-5-5 · `test_esquiva_invencivel_com_travada` (T19) passou a comparar a vida com a de logo antes da esquiva, porque o golpe de controle agora tira 20 de vida de verdade — o que o teste prova (nenhum golpe novo na invencibilidade) não muda — custo se errado: nenhum.
+- [2026-11-14] T21 · claude-opus-5-5 · Empurrão do `hurt` em velocidade constante (0,5 m / 0,3 s = 1,67 m/s), direção de `hitbox.source` (ou da própria hitbox) até o herói; um golpe novo no meio recomeça o `hurt` — o brief só fixa distância e duração — custo se errado: troca da curva do empurrão, só em `hurt.gd`.
+- [2026-11-14] T21 · claude-opus-5-5 · Frascos valem em idle, move, attack, roll e parry (só `hurt` e `dead` bloqueiam), consumidos em `step()` antes da máquina de estados — o brief diz "fora de hurt e dead" — custo se errado: o teste de Pedro (T32) pode pedir bloqueio no ataque/esquiva; ajuste de uma linha em `_use_flasks`.
+- [2026-11-14] T21 · claude-opus-5-5 · Golpe em herói morto é ignorado em `_on_hurt` (nem dano, nem sanidade); `hero_died` é emitido por `Stats.died`, que só dispara uma vez — custo se errado: nenhum visível na demo.
+- [2026-11-14] T21 · claude-opus-5-5 · Teste da T19 (`test_esquiva_invencivel_com_travada`) espera 0,35 s depois do golpe de controle, porque o `hurt` ignora a entrada — custo se errado: nenhum, só o teste.
