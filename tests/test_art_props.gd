@@ -76,3 +76,20 @@ func test_cena_braseiro() -> void:
 	_malhas(b, malhas)
 	assert_true(malhas.size() > 0, "braseiro sem o modelo")
 	b.free()
+
+
+func test_espada() -> void:
+	var raiz := _carregar_glb("res://assets/models/personagens/espada.glb")
+	assert_true(raiz != null, "assets/models/personagens/espada.glb não abre")
+	if raiz == null:
+		return
+	var m := _medir(raiz)
+	raiz.free()
+	var caixa: AABB = m.caixa
+	assert_true(m.tris > 0 and m.tris <= 2000, "triângulos: %d (limite 2.000)" % m.tris)
+	assert_true(caixa.size.y >= 1.1 and caixa.size.y <= 1.4, "comprimento: %.3f m (1,1 a 1,4)" % caixa.size.y)
+	# Origem na pegada: o cabo e o pomo ficam abaixo dela (10 a 30 cm), a lâmina sobe em +Y.
+	assert_true(caixa.position.y <= -0.10 and caixa.position.y >= -0.30, "pomo a %.3f m da origem (−0,30 a −0,10)" % caixa.position.y)
+	var centro := caixa.get_center()
+	assert_near(centro.x, 0.0, 0.02, "origem fora do eixo do cabo em X")
+	assert_near(centro.z, 0.0, 0.02, "origem fora do eixo do cabo em Z")
