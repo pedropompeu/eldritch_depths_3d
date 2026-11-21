@@ -353,4 +353,5 @@ def main():
     print("RELATORIO", ed.report(partes))
 
 
-main()
+if __name__ == "__main__":
+    main()
