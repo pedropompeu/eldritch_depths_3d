@@ -93,3 +93,18 @@ func test_espada() -> void:
 	var centro := caixa.get_center()
 	assert_near(centro.x, 0.0, 0.02, "origem fora do eixo do cabo em X")
 	assert_near(centro.z, 0.0, 0.02, "origem fora do eixo do cabo em Z")
+
+
+func test_cavaleiro_malha() -> void:
+	var raiz := _carregar_glb("res://art/personagens/cavaleiro/cavaleiro_malha.glb")
+	assert_true(raiz != null, "art/personagens/cavaleiro/cavaleiro_malha.glb não abre")
+	if raiz == null:
+		return
+	var m := _medir(raiz)
+	raiz.free()
+	var caixa: AABB = m.caixa
+	assert_true(m.tris > 0 and m.tris <= 20000, "triângulos: %d (limite 20.000)" % m.tris)
+	assert_true(caixa.size.y >= 1.70 and caixa.size.y <= 1.90, "altura: %.3f m (1,70 a 1,90)" % caixa.size.y)
+	assert_near(caixa.position.y, 0.0, 0.03, "base fora do chão em Y")
+	var centro := caixa.get_center()
+	assert_near(centro.x, 0.0, 0.05, "origem fora do centro em X")
