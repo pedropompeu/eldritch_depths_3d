@@ -8,6 +8,8 @@ extends StaticBody3D
 const DISSOLVE_TIME := 0.6
 ## Camada do mundo (1), a mesma das paredes da sala.
 const WORLD_LAYER := 1
+## Malha da parede do kit: o Véu usa a mesma pedra da sala, no lugar da caixa.
+const MALHA_PEDRA: PackedScene = preload("res://assets/models/kit/parede.glb")
 
 @export var opens_at: Veil.Band = Veil.Band.FINO
 
@@ -29,8 +31,26 @@ var _material: ShaderMaterial
 func _ready() -> void:
 	add_to_group(&"veil_walls")
 	collision_layer = WORLD_LAYER
-	_material = mesh.mesh.surface_get_material(0) as ShaderMaterial
+	_usar_malha_do_kit()
+	_material = mesh.material_override as ShaderMaterial
+	if _material == null:
+		_material = mesh.mesh.surface_get_material(0) as ShaderMaterial
 	dissolve = dissolve
+
+
+## Troca a caixa pela malha de `parede.glb` (B15). O material do shader entra
+## por `material_override`, então a malha compartilhada com a sala não muda.
+## A peça do kit tem a origem no canto de grade; a colisão fica centrada no nó,
+## então o `Mesh` recebe o deslocamento contrário ao centro da malha.
+func _usar_malha_do_kit() -> void:
+	var copia := MALHA_PEDRA.instantiate()
+	for no in copia.find_children("*", "MeshInstance3D", true, false):
+		var peca := no as MeshInstance3D
+		if peca.mesh:
+			mesh.mesh = peca.mesh
+			mesh.position = -peca.mesh.get_aabb().get_center()
+			break
+	copia.free()
 
 
 func _physics_process(_delta: float) -> void:

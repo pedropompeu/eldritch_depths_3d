@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="PackedScene" path="res://assets/models/kit/parede_porta.glb" id="1_malha"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_soleira"]
+size = Vector3(2, 0.06, 0.4)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_verga"]
+size = Vector3(2, 0.6, 0.4)
+
+[node name="DoorWall" type="StaticBody3D"]
+collision_mask = 0
+
+[node name="Mesh" parent="." instance=ExtResource("1_malha")]
+
+[node name="CollisionFloor" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0.03, 0.2)
+shape = SubResource("BoxShape3D_soleira")
+
+[node name="CollisionLintel" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 2.7, 0.2)
+shape = SubResource("BoxShape3D_verga")

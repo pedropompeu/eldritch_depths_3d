@@ -9,6 +9,10 @@ uniform vec4 albedo : source_color = vec4(0.16, 0.1, 0.22, 1.0);
 uniform vec4 edge_color : source_color = vec4(0.62, 0.35, 1.0, 1.0);
 uniform float edge_width = 0.08;
 uniform float glow = 0.25;
+// Cor da pedra por cima do `albedo` (B15): a parede do Véu usa a malha e a
+// textura da parede do kit; sem textura, fica o violeta do `albedo`.
+uniform sampler2D cor_textura : source_color, hint_default_white;
+uniform float usa_cor_textura = 0.0;
 
 varying vec3 local_pos;
 
@@ -41,7 +45,11 @@ void fragment() {
 		discard;
 	}
 	float edge = 1.0 - smoothstep(0.0, edge_width, n - dissolve);
-	ALBEDO = albedo.rgb;
+	vec3 cor = albedo.rgb;
+	if (usa_cor_textura > 0.5) {
+		cor = texture(cor_textura, UV).rgb;
+	}
+	ALBEDO = cor;
 	ROUGHNESS = 0.6;
-	EMISSION = albedo.rgb * glow + edge_color.rgb * edge * step(0.001, dissolve) * 3.0;
+	EMISSION = cor * glow + edge_color.rgb * edge * step(0.001, dissolve) * 3.0;
 }
