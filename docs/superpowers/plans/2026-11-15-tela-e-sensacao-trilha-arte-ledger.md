@@ -28,7 +28,7 @@ Plano: `docs/superpowers/plans/2026-11-15-tela-e-sensacao-trilha-arte.md`
 | B11b | Conceito do Cultista — versão realista | arte | B01 | feita | claude-opus-5-5 | 2026-11-15 | 432217e..1276379 | portão. [2026-11-15] Pedro pediu "o Cultista tembem precisa ser mais real" depois de aprovar a versão 2. Versão 3 pelo mesmo `build_conceito.py`, com relevo de material, metal metálico e dobras irregulares; guia de estilo atualizado. [Pedro] aprovar ou pedir ajustes ~superseded 2026-11-15: Pedro aprovou ("aprovado"), junto com a regra nova do guia; prévias da versão 3 em `docs/arte/previas/`. |
 | B12 | Cultista — malha e textura | arte | B04, B11 | livre | | | | [Pedro] gera 3D; portão |
 | B13 | Cultista — rig, animações e jogo | difícil | B10, B12 | livre | | | | [Pedro] opera o Mixamo; portão |
-| B14 | Kit modular — peças | arte | B04, T32 (a) | livre | | | | portão [2026-11-15] T32 (a) respondida: enquadramento "atual" (herói ≈ 1/13 da altura da tela); Pedro delegou a escolha. |
+| B14 | Kit modular — peças | arte | B04, T32 (a) | em andamento | deepseek-v4.1-flash-free | 2026-11-20 | | portão [2026-11-15] T32 (a) respondida: enquadramento "atual" (herói ≈ 1/13 da altura da tela); Pedro delegou a escolha. [2026-11-20] Trilha paralela: o Antigravity segue na B06; Pedro pediu ajuda e a B14 foi assumida pelo OpenCode (`deepseek-v4.1-flash-free`), em arquivos separados (`art/kit/`, `assets/models/kit/`, `tests/test_art_kit.gd`) para não colidir. |
 | B15 | Sala do kit no jogo | médio | B14 | livre | | | | |
 | B16 | Luz, acabamento e fecho | arte | B10, B13, B15 | livre | | | | |
 | B17 | Pedro joga e aprova | — | B16 | livre | | | | só Pedro marca |
